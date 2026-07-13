@@ -1,0 +1,30 @@
+/* Globale Design-Tokens für "Insel-Adventure".
+   Gedämpfte, leicht verwitterte Palette – altes Kartenpapier trifft auf tropische Nacht.
+   In styles.scss oder angular.json (styles-Array) einbinden. */
+
+:root {
+  --map-bg: #0c0c12;
+  --fog-color: #12121a;
+  --grid-line: #2a2a35;
+  --accent-color: #e0a458; /* altes Gold, für Marker/Highlights */
+
+  --text-primary: #f2ede3;
+  --dialogue-bg: #1c1a24;
+  --dialogue-border: #e0a458;
+
+  /* Biome-Farben */
+  --biome-beach: #d9c08a;
+  --biome-jungle: #2f5233;
+  --biome-lake: #2a5a73;
+  --biome-mountain: #5b5a56;
+  --biome-bay: #3a4a63;
+  --biome-village: #7a5a3a;
+}
+
+html, body {
+  margin: 0;
+  padding: 0;
+  background: var(--map-bg);
+  font-family: 'Georgia', 'Iowan Old Style', serif; /* leicht "altes Abenteuerbuch"-Gefühl */
+  color: var(--text-primary);
+}
