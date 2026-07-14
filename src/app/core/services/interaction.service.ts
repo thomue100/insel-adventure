@@ -4,6 +4,7 @@ import { IslandMapService } from './island-map.service';
 import { CharacterService } from './character.service';
 import { DialogueService } from './dialogue.service';
 import { AdventureService } from './adventure.service';
+import { AmbientEventService } from './ambient-event.service';
 import { DIALOGUE_SCENES } from '../../data/dialogue-scenes.data';
 
 @Injectable({ providedIn: 'root' })
@@ -13,14 +14,17 @@ export class InteractionService {
     private readonly characters: CharacterService,
     private readonly dialogue: DialogueService,
     private readonly adventures: AdventureService,
+    private readonly ambientEvents: AmbientEventService,
   ) {}
 
   /**
    * Zentrale Aktion, wenn der Spieler auf ein Feld klickt:
    * 1. Bewegung des gesamten Duos versuchen
-   * 2. Bei Erfolg: Feld-Event auslösen (einmalig)
-   * 3. Zugriffsbeschränkte Orte werden anhand der Hauptfigur geprüft
-   * 4. Ist das Feld ein Abenteuer-Trigger, versucht der AdventureService zu starten
+   * 2. War das der allererste Schritt überhaupt: garantiert NUR das
+   *    Raschel-Tier-Tutorial auslösen, unabhängig vom gewählten Feld –
+   *    alles andere (Feld-Events, weitere Abenteuer) wartet bis danach.
+   * 3. Sonst: Feld-Event auslösen (einmalig) und Abenteuer-Trigger prüfen
+   * 4. Zugriffsbeschränkte Orte werden anhand der Hauptfigur geprüft
    */
   movePartyTo(target: HexCoordinates): { moved: boolean; blockedReason?: string } {
     const tile = this.islandMap.getTile(target);
@@ -31,11 +35,25 @@ export class InteractionService {
       return { moved: false, blockedReason: 'Diese Figur traut sich hier nicht hin.' };
     }
 
+    const isFirstStepEver = !this.characters.hasMoved();
+    const wasAlreadyExplored = tile.discoveryStatus === 'explored';
+
     const moved = this.characters.movePartyTo(target);
     if (!moved) return { moved: false, blockedReason: 'Zu weit entfernt.' };
 
-    this.triggerTileEvent(target);
-    this.triggerLocationAdventure(target);
+    if (isFirstStepEver) {
+      this.adventures.tryStartFromLocation('rustling-creature');
+    } else {
+      this.triggerTileEvent(target);
+      this.triggerLocationAdventure(target);
+
+      // Nur auf sonst "leeren" Feldern (kein Event, kein besonderer Ort) und nur
+      // beim allerersten Betreten - verhindert Leerlauf, ohne die Karte zuzuspammen.
+      if (!wasAlreadyExplored && !tile.event && !tile.interactable) {
+        this.ambientEvents.tryTrigger(tile.biome);
+      }
+    }
+
     return { moved: true };
   }
 

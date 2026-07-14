@@ -15,9 +15,12 @@ const PARTY_VISION_RANGE = 1;
 export class CharacterService {
   private readonly _leadCharacter = signal<CharacterId | null>(null);
   private readonly _partyPosition = signal<HexCoordinates>({ q: 0, r: 0 });
+  private readonly _hasMoved = signal(false);
 
   readonly leadCharacter = this._leadCharacter.asReadonly();
   readonly partyPosition = this._partyPosition.asReadonly();
+  /** Wird true, sobald das Duo sich ein einziges Mal bewegt hat (für den garantierten ersten-Schritt-Trigger). */
+  readonly hasMoved = this._hasMoved.asReadonly();
 
   readonly companionCharacter = computed<CharacterId | null>(() => {
     const lead = this._leadCharacter();
@@ -54,6 +57,7 @@ export class CharacterService {
     if (distance === 0 || distance > PARTY_MOVEMENT_RANGE) return false;
 
     this._partyPosition.set(target);
+    this._hasMoved.set(true);
     this.islandMap.revealAround(target, PARTY_VISION_RANGE);
     this.islandMap.markExplored(target);
     return true;

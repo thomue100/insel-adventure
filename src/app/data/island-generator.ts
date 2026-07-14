@@ -211,18 +211,9 @@ function attachSpecialPlacesAndEvents(tiles: HexTile[], cove: HexCoordinates, la
     caveTile.adventureTrigger = 'cave-of-e-buff';
   }
 
-  // Raschel-Tier: der nächstgelegene Dschungel-Rand zur Landestelle (erster Schritt ins Grün).
-  const jungleTiles = tiles.filter((t) => t.biome === BiomeType.Jungle);
-  const rustlingTile = [...jungleTiles].sort(
-    (a, b) => hexDistance(landingSpot, a.coordinates) - hexDistance(landingSpot, b.coordinates),
-  )[0];
-  if (rustlingTile) {
-    rustlingTile.adventureTrigger = 'rustling-creature';
-  }
-
   // Affen: ein Dschungel-Feld spürbar weiter von der Landestelle entfernt -> erfordert echtes Erkunden.
-  const monkeyCandidates = jungleTiles.filter((t) => t.id !== rustlingTile?.id);
-  const monkeyTile = [...monkeyCandidates].sort(
+  const jungleTiles = tiles.filter((t) => t.biome === BiomeType.Jungle);
+  const monkeyTile = [...jungleTiles].sort(
     (a, b) => hexDistance(landingSpot, b.coordinates) - hexDistance(landingSpot, a.coordinates),
   )[0];
   if (monkeyTile) {
@@ -230,7 +221,7 @@ function attachSpecialPlacesAndEvents(tiles: HexTile[], cove: HexCoordinates, la
   }
 
   // Tempelruine: tief im Inselinneren (größte Distanz zum Zentrum unter den verbliebenen Dschungelfeldern).
-  const templeCandidates = jungleTiles.filter((t) => t.id !== rustlingTile?.id && t.id !== monkeyTile?.id);
+  const templeCandidates = jungleTiles.filter((t) => t.id !== monkeyTile?.id);
   const templeTile = [...templeCandidates].sort(
     (a, b) => hexDistance(CENTER, b.coordinates) - hexDistance(CENTER, a.coordinates),
   )[0];
@@ -257,9 +248,7 @@ function attachSpecialPlacesAndEvents(tiles: HexTile[], cove: HexCoordinates, la
     };
   }
 
-  const jungleTeaseTile = jungleTiles.find(
-    (t) => t.id !== rustlingTile?.id && t.id !== monkeyTile?.id && t.id !== templeTile?.id,
-  );
+  const jungleTeaseTile = jungleTiles.find((t) => t.id !== monkeyTile?.id && t.id !== templeTile?.id);
   if (jungleTeaseTile) {
     jungleTeaseTile.event = {
       id: 'jungle-trap',

@@ -1076,6 +1076,146 @@ export const DIALOGUE_SCENES: Record<string, DialogueScene> = {
     ],
   },
 
+  'ambient-beach-shell': {
+    id: 'ambient-beach-shell',
+    trigger: 'tile-reveal',
+    once: true,
+    hasPlayed: false,
+    lines: [
+      { speaker: 'narrator', text: 'Zwischen dem Sand liegt eine ungewöhnlich große, glänzende Muschel.' },
+      { speaker: 'princess', emotion: 'smug', text: 'Die würde sich hervorragend als Broschen-Vorlage eignen.' },
+      { speaker: 'helix', emotion: 'sarcastic', text: 'Oder als Waffe. Ich behalte alle Optionen offen.' },
+    ],
+  },
+  'ambient-beach-bottle': {
+    id: 'ambient-beach-bottle',
+    trigger: 'tile-reveal',
+    once: true,
+    hasPlayed: false,
+    lines: [
+      { speaker: 'narrator', text: 'Halb im Sand vergraben liegt eine verkorkte Flasche mit einer vergilbten Nachricht darin.' },
+      { speaker: 'helix', emotion: 'panicked', text: 'Ein Hilferuf! Ein Schatzhinweis! Meine Rettung!' },
+      { speaker: 'narrator', text: 'Die Nachricht entpuppt sich als halb verwischte Einkaufsliste. "Rum. Mehr Rum."' },
+      { speaker: 'princess', emotion: 'sarcastic', text: 'Immerhin wissen wir jetzt, wer hier vor uns campiert hat.' },
+    ],
+  },
+
+  'ambient-jungle-bird': {
+    id: 'ambient-jungle-bird',
+    trigger: 'tile-reveal',
+    once: true,
+    hasPlayed: false,
+    lines: [
+      { speaker: 'narrator', text: 'Mit einem grellen Kreischen schießt ein knallbunter Vogel aus dem Blätterdach.' },
+      { speaker: 'helix', emotion: 'panicked', text: 'ANGRIFF! ÄH – FALSCHER ALARM. Nur ein Vogel.' },
+      { speaker: 'princess', emotion: 'sarcastic', text: 'Ihre Reaktionszeit auf gefiederte Bedrohungen ist wirklich bemerkenswert.' },
+    ],
+  },
+  'ambient-jungle-fruit': {
+    id: 'ambient-jungle-fruit',
+    trigger: 'tile-reveal',
+    once: true,
+    hasPlayed: false,
+    lines: [
+      { speaker: 'narrator', text: 'An einem niedrigen Ast hängt eine Frucht in einer Farbe, die die Natur eigentlich nicht vorgesehen hat.' },
+      { speaker: 'helix', emotion: 'smug', text: 'Sieht essbar aus. Ich probiere.' },
+      { speaker: 'princess', emotion: 'panicked', text: 'Helix, NEIN – wir wissen nicht, was das ist!' },
+      { speaker: 'narrator', text: 'Er probiert trotzdem. Nichts passiert. Er wirkt fast enttäuscht darüber.' },
+    ],
+  },
+  'ambient-jungle-vine': {
+    id: 'ambient-jungle-vine',
+    trigger: 'tile-reveal',
+    once: true,
+    hasPlayed: false,
+    lines: [
+      { speaker: 'narrator', text: 'Helix verheddert sich beim Vorangehen prompt in einer herabhängenden Ranke.' },
+      { speaker: 'helix', emotion: 'confused', text: 'Das war Absicht. Eine Art... Tarnung.' },
+      { speaker: 'princess', emotion: 'sarcastic', text: 'Getarnt als kopfüber hängender Abenteurer. Sehr überzeugend.' },
+    ],
+  },
+
+  'ambient-lake-fish': {
+    id: 'ambient-lake-fish',
+    trigger: 'tile-reveal',
+    once: true,
+    hasPlayed: false,
+    lines: [
+      { speaker: 'narrator', text: 'Ein silbriger Fisch springt kurz aus dem Wasser und platscht zurück.' },
+      { speaker: 'helix', emotion: 'confused', text: 'Aha. Nur ein Fisch. Ich hatte schon gehofft.' },
+      { speaker: 'princess', emotion: 'sarcastic', text: 'Gehofft worauf genau? Auf ein weiteres Ungeheuer?' },
+    ],
+  },
+  'ambient-lake-reflection': {
+    id: 'ambient-lake-reflection',
+    trigger: 'tile-reveal',
+    once: true,
+    hasPlayed: false,
+    lines: [
+      { speaker: 'narrator', text: 'Die Wasseroberfläche liegt spiegelglatt da – ein perfektes Abbild von Palmen und Himmel.' },
+      { speaker: 'princess', emotion: 'smug', text: 'Endlich eine Spiegelfläche, die meiner würdig ist.' },
+      { speaker: 'helix', emotion: 'sarcastic', text: 'Sie meinen, endlich eine, die nicht zurückredet.' },
+    ],
+  },
+
+  'ambient-mountain-wind': {
+    id: 'ambient-mountain-wind',
+    trigger: 'tile-reveal',
+    once: true,
+    hasPlayed: false,
+    lines: [
+      { speaker: 'narrator', text: 'Eine plötzliche Windböe fegt über den Hang und reißt Helix beinahe die Mütze vom Kopf.' },
+      { speaker: 'helix', emotion: 'panicked', text: 'Nicht die Mütze! Die Mütze ist Teil meines Images!' },
+      { speaker: 'princess', emotion: 'sarcastic', text: 'Ihr Image wird den Verlust überleben, Helix.' },
+    ],
+  },
+  'ambient-mountain-rocks': {
+    id: 'ambient-mountain-rocks',
+    trigger: 'tile-reveal',
+    once: true,
+    hasPlayed: false,
+    lines: [
+      { speaker: 'narrator', text: 'Unter Helix\' Stiefel löst sich ein loser Stein und poltert den Hang hinunter.' },
+      { speaker: 'helix', emotion: 'panicked', text: 'Das war kalkuliert! Ich lockere den Weg für Sie!' },
+      { speaker: 'princess', emotion: 'sarcastic', text: 'Wie aufopferungsvoll von Ihnen, beinahe zu stürzen.' },
+    ],
+  },
+
+  'ambient-bay-driftwood': {
+    id: 'ambient-bay-driftwood',
+    trigger: 'tile-reveal',
+    once: true,
+    hasPlayed: false,
+    lines: [
+      { speaker: 'narrator', text: 'Ein Stück Treibholz liegt im seichten Wasser – auffällig regelmäßig geformt, fast wie ein kleines Ruder.' },
+      { speaker: 'helix', emotion: 'confused', text: 'Sieht aus, als hätte hier schon mal jemand improvisiert.' },
+      { speaker: 'princess', emotion: 'sarcastic', text: 'Klingt nach Ihrer Art von Seemannschaft.' },
+    ],
+  },
+
+  'ambient-village-chicken': {
+    id: 'ambient-village-chicken',
+    trigger: 'tile-reveal',
+    once: true,
+    hasPlayed: false,
+    lines: [
+      { speaker: 'narrator', text: 'Ein aufgeregtes, hühnerähnliches Tier stolziert quer über den Weg und verschwindet im Gebüsch.' },
+      { speaker: 'helix', emotion: 'smug', text: 'Mittagessen, direkt geliefert.' },
+      { speaker: 'princess', emotion: 'annoyed', text: 'Das gehört vermutlich jemandem, Helix. Lassen Sie es.' },
+    ],
+  },
+  'ambient-village-drums': {
+    id: 'ambient-village-drums',
+    trigger: 'tile-reveal',
+    once: true,
+    hasPlayed: false,
+    lines: [
+      { speaker: 'narrator', text: 'Aus der Ferne trägt der Wind einen gleichmäßigen Trommelrhythmus herüber.' },
+      { speaker: 'helix', emotion: 'confused', text: 'Klingt fast einladend. Oder wie eine Kriegstrommel. Schwer zu sagen.' },
+      { speaker: 'princess', emotion: 'smug', text: 'Wahrscheinlich einfach nur Musik, Helix. Nicht alles ist eine Bedrohung.' },
+    ],
+  },
+
   'lake-monster-tease': {
     id: 'lake-monster-tease',
     trigger: 'tile-reveal',

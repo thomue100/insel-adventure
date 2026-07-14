@@ -54,20 +54,29 @@ export class AdventureService {
   }
 
   /**
-   * Wird beim Betreten einer Kachel mit `adventureTrigger` aufgerufen.
-   * Startet das Abenteuer nur, wenn gerade kein anderes läuft, es noch nicht
-   * abgeschlossen ist und die Voraussetzungen (vorherige Akte) erfüllt sind.
-   * Sind die Bedingungen nicht erfüllt, passiert bewusst nichts – kein Fehler,
-   * kein Hinweis, das Feld bleibt einfach für später "aufgehoben".
+   * Reine Abfrage (ohne Seiteneffekt): Könnte dieses Abenteuer jetzt starten,
+   * wenn man die zugehörige Kachel beträte? Wird sowohl von
+   * `tryStartFromLocation` als auch von der Karte (dezenter Hinweis-Glow auf
+   * bereits entdeckten Kacheln) genutzt.
    */
-  tryStartFromLocation(id: AdventureId): void {
-    if (this._activeAdventureId()) return;
-    if (this.hasCompleted(id)) return;
+  isReadyToTrigger(id: AdventureId): boolean {
+    if (this._activeAdventureId()) return false;
+    if (this.hasCompleted(id)) return false;
 
     const definition = ADVENTURE_DEFINITIONS.find((a) => a.id === id);
-    if (!definition || definition.steps.length === 0) return; // noch nicht implementiertes Abenteuer
-    if (this._completedCount() < definition.requiresCompletedCount) return;
+    if (!definition || definition.steps.length === 0) return false; // noch nicht implementiertes Abenteuer
 
+    return this._completedCount() >= definition.requiresCompletedCount;
+  }
+
+  /**
+   * Wird beim Betreten einer Kachel mit `adventureTrigger` aufgerufen.
+   * Startet das Abenteuer nur, wenn `isReadyToTrigger` zustimmt. Sind die
+   * Bedingungen nicht erfüllt, passiert bewusst nichts – kein Fehler, kein
+   * Hinweis, das Feld bleibt einfach für später "aufgehoben".
+   */
+  tryStartFromLocation(id: AdventureId): void {
+    if (!this.isReadyToTrigger(id)) return;
     this.startAdventure(id);
   }
 
