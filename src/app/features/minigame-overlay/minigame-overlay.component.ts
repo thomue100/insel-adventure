@@ -15,10 +15,29 @@ const FOCUS_JITTER_EVERY_N_TICKS = 4; // alle ~400ms neu wackeln
 const FOCUS_JITTER_RANGE = 22;
 
 // Klick-Rasen (Stärke, Raschel-Tier)
-const MASH_DURATION_MS = 5000;
-const MASH_TICK_MS = 100;
-const MASH_GAIN_PER_CLICK = 8;
-const MASH_DECAY_PER_TICK = 1.5;
+// Abwechselndes Stampfen (Raschel-Tier, Stärke)
+const STOMP_DURATION_MS = 6000;
+const STOMP_TICK_MS = 100;
+const STOMP_GAIN_PER_HIT = 10;
+const STOMP_DECAY_PER_TICK = 1.2;
+
+// Kraftmesser halten & loslassen (Dorf, Stärke)
+const POWER_DURATION_MS = 8000;
+const POWER_TICK_MS = 50;
+const POWER_RISE_PER_TICK = 4;
+const POWER_TARGET_MIN = 65;
+const POWER_TARGET_MAX = 85;
+
+// Anker per Zug-Drag lichten (Finale, Schiff übernehmen)
+const ANCHOR_DURATION_MS = 7000;
+const ANCHOR_TICK_MS = 100;
+const ANCHOR_DECAY_PER_TICK = 2;
+const ANCHOR_PULL_THRESHOLD = 25; // Mindest-Zugstrecke in px, damit ein Zug zählt
+const ANCHOR_GAIN_PER_PULL = 18;
+
+// Steinblöcke schieben (Königsschatz, Stärke)
+const BLOCK_DURATION_MS = 10000;
+const BLOCK_TICK_MS = 100;
 
 // Balance-Spiel (Diplomatie, Affen)
 const BALANCE_DURATION_MS = 7000;
@@ -126,6 +145,14 @@ const LOGIC_PREVIEW_GAP_MS = 250;
 const LOGIC_DURATION_MS = 16000;
 const LOGIC_TICK_MS = 100;
 
+// Wachsende Merk-Sequenz (Ä-Buff Schritt 2, Stärke) - Simon-Says-artig
+const MEMORY_SYMBOLS = ['🏆', '⚔️', '🔥', '💥'];
+const MEMORY_MAX_ROUND = 4;
+const MEMORY_PREVIEW_STEP_MS = 650;
+const MEMORY_PREVIEW_GAP_MS = 300;
+const MEMORY_DURATION_MS = 18000;
+const MEMORY_TICK_MS = 100;
+
 function clamp(value: number, min: number, max: number): number {
   return Math.min(max, Math.max(min, value));
 }
@@ -162,11 +189,14 @@ function distance(a: { x: number; y: number }, b: { x: number; y: number }): num
             }
 
             @if (type === 'click-mash') {
-              <div class="minigame-title">📢 Lautstark verscheuchen</div>
-              <div class="minigame-hint">Klick so schnell du kannst auf das Gebüsch!</div>
-              <button class="game-area mash-button" (click)="onMashClick()">🌿💥</button>
+              <div class="minigame-title">🦶 Abwechselnd stampfen</div>
+              <div class="minigame-hint">Klick abwechselnd links und rechts – nicht zweimal dieselbe Seite hintereinander!</div>
+              <div class="stomp-buttons">
+                <button class="stomp-btn" (click)="onStompClick('left')">⬅️ Stampf!</button>
+                <button class="stomp-btn" (click)="onStompClick('right')">➡️ Stampf!</button>
+              </div>
               <div class="progress-bar">
-                <div class="progress-fill" [style.width.%]="mashProgress()"></div>
+                <div class="progress-fill" [style.width.%]="stompProgress()"></div>
               </div>
               <div class="time-hint">⏳ {{ remainingSeconds() }}s</div>
             }
@@ -297,11 +327,25 @@ function distance(a: { x: number; y: number }, b: { x: number; y: number }): num
             }
 
             @if (type === 'boast-mash') {
-              <div class="minigame-title">⚔️ Prahlerei überbieten</div>
-              <div class="minigame-hint">Klick schnell, um immer dramatischere Details hinzuzudichten!</div>
-              <button class="game-area mash-button" (click)="onMashClick()">⚔️💥</button>
-              <div class="progress-bar">
-                <div class="progress-fill" [style.width.%]="mashProgress()"></div>
+              <div class="minigame-title">🏆 Geschichten überbieten</div>
+              <div class="minigame-hint">
+                @if (memoryPhase() === 'preview') {
+                  Merk dir die Reihenfolge! (Runde {{ memoryRound() }}/{{ memoryMaxRound }})
+                } @else {
+                  Wiederhole sie! ({{ memoryInputIndex() }}/{{ memoryRound() }})
+                }
+              </div>
+              <div class="logic-preview">{{ memoryPreviewIndex() >= 0 ? memorySymbols[memoryPreviewIndex()] : '❔' }}</div>
+              <div class="logic-grid">
+                @for (symbol of memorySymbols; track $index) {
+                  <button
+                    class="logic-symbol-btn"
+                    [disabled]="memoryPhase() !== 'input'"
+                    (click)="onMemorySymbolClick($index)"
+                  >
+                    {{ symbol }}
+                  </button>
+                }
               </div>
               <div class="time-hint">⏳ {{ remainingSeconds() }}s</div>
             }
@@ -320,12 +364,20 @@ function distance(a: { x: number; y: number }, b: { x: number; y: number }): num
             }
 
             @if (type === 'reckless-posture') {
-              <div class="minigame-title">💢 Groß aufplustern</div>
-              <div class="minigame-hint">Klick schnell, um möglichst bedrohlich zu wirken!</div>
-              <button class="game-area mash-button" (click)="onMashClick()">💪😤</button>
-              <div class="progress-bar">
-                <div class="progress-fill" [style.width.%]="mashProgress()"></div>
+              <div class="minigame-title">💪 Groß aufplustern</div>
+              <div class="minigame-hint">Halte gedrückt, bis der Kraftmesser in der markierten Zone steht – dann loslassen!</div>
+              <div class="power-gauge-track">
+                <div class="power-gauge-zone"></div>
+                <div class="power-gauge-fill" [style.height.%]="powerValue()"></div>
               </div>
+              <button
+                class="throw-button"
+                (mousedown)="onPowerHoldStart()"
+                (mouseup)="onPowerHoldEnd()"
+                (mouseleave)="onPowerHoldEnd()"
+              >
+                💪 Halten!
+              </button>
               <div class="time-hint">⏳ {{ remainingSeconds() }}s</div>
             }
 
@@ -372,10 +424,17 @@ function distance(a: { x: number; y: number }, b: { x: number; y: number }): num
 
             @if (type === 'anchor-heave') {
               <div class="minigame-title">⚓ Anker lichten</div>
-              <div class="minigame-hint">Klick so schnell du kannst, um die Ankerkette hochzuziehen!</div>
-              <button class="game-area mash-button" (click)="onMashClick()">⚓💪</button>
+              <div class="minigame-hint">Klick, zieh nach oben und lass los – immer wieder, um die Kette hochzuziehen!</div>
+              <div
+                class="game-area anchor-drag-area"
+                (mousedown)="onAnchorDragStart($event)"
+                (mouseup)="onAnchorDragEnd($event)"
+                (mouseleave)="onAnchorDragCancel()"
+              >
+                ⚓
+              </div>
               <div class="progress-bar">
-                <div class="progress-fill" [style.width.%]="mashProgress()"></div>
+                <div class="progress-fill" [style.width.%]="anchorProgress()"></div>
               </div>
               <div class="time-hint">⏳ {{ remainingSeconds() }}s</div>
             }
@@ -405,11 +464,19 @@ function distance(a: { x: number; y: number }, b: { x: number; y: number }): num
             }
 
             @if (type === 'lever-heave') {
-              <div class="minigame-title">🪨 Am Hebel ziehen</div>
-              <div class="minigame-hint">Klick so schnell wie möglich, um den uralten Steinhebel zu bewegen!</div>
-              <button class="game-area mash-button" (click)="onMashClick()">🪨💪</button>
-              <div class="progress-bar">
-                <div class="progress-fill" [style.width.%]="mashProgress()"></div>
+              <div class="minigame-title">🗿 Steinblöcke schieben</div>
+              <div class="minigame-hint">Klick die Blöcke, bis alle drei einrasten!</div>
+              <div class="block-row">
+                @for (pos of blockPositions(); track $index) {
+                  <button
+                    class="block-btn"
+                    [class.aligned]="blockAligned()[$index]"
+                    [style.transform]="'rotate(' + pos * 90 + 'deg)'"
+                    (click)="onBlockShoveClick($index)"
+                  >
+                    🗿
+                  </button>
+                }
               </div>
               <div class="time-hint">⏳ {{ remainingSeconds() }}s</div>
             }
@@ -507,6 +574,78 @@ function distance(a: { x: number; y: number }, b: { x: number; y: number }): num
     }
     .mash-button:active {
       transform: scale(0.96);
+    }
+    .stomp-buttons {
+      display: flex;
+      gap: 14px;
+    }
+    .stomp-btn {
+      font-size: 18px;
+      padding: 1rem 1.3rem;
+      background: radial-gradient(ellipse at center, #1f3a24 0%, #142016 100%);
+      border: 1px solid #3a3a45;
+      border-radius: 10px;
+      color: var(--text-primary, #f2ede3);
+      cursor: pointer;
+      transition: transform 0.05s ease, border-color 0.1s ease;
+    }
+    .stomp-btn:active {
+      transform: scale(0.94);
+    }
+    .power-gauge-track {
+      position: relative;
+      width: 56px;
+      height: 170px;
+      background: #1a130c;
+      border: 1px solid #3a3a45;
+      border-radius: 8px;
+      display: flex;
+      flex-direction: column-reverse;
+      overflow: hidden;
+    }
+    .power-gauge-zone {
+      position: absolute;
+      left: 0;
+      right: 0;
+      bottom: 65%;
+      height: 20%;
+      background: rgba(224, 164, 88, 0.22);
+      border-top: 1px dashed var(--accent-color, #e0a458);
+      border-bottom: 1px dashed var(--accent-color, #e0a458);
+    }
+    .power-gauge-fill {
+      width: 100%;
+      background: linear-gradient(0deg, var(--accent-color, #e0a458), #f2d19a);
+      transition: height 0.05s linear;
+    }
+    .anchor-drag-area {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 46px;
+      cursor: grab;
+      user-select: none;
+    }
+    .anchor-drag-area:active {
+      cursor: grabbing;
+    }
+    .block-row {
+      display: flex;
+      gap: 14px;
+    }
+    .block-btn {
+      width: 58px;
+      height: 58px;
+      font-size: 28px;
+      background: radial-gradient(ellipse at center, #1f3a24 0%, #142016 100%);
+      border: 1px solid #3a3a45;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: transform 0.2s ease, border-color 0.2s ease, background 0.2s ease;
+    }
+    .block-btn.aligned {
+      border-color: #8fd68a;
+      background: rgba(143, 214, 138, 0.2);
     }
     .balance-track, .coconut-track, .rhythm-track {
       width: 260px;
@@ -827,15 +966,20 @@ export class MinigameOverlayComponent implements OnDestroy {
   private danceCellElapsedMs = 0;
   private dominoTileIdCounter = 0;
   private previewTimeoutId: ReturnType<typeof setTimeout> | null = null;
+  private lastStompSide: 'left' | 'right' | null = null;
+  private powerHeld = false;
+  private anchorDragStartY: number | null = null;
+  private blockTargets: number[] = [0, 0, 0];
 
   readonly scanIndices = Array.from({ length: SCAN_CELL_COUNT }, (_, i) => i);
   readonly logicSymbols = LOGIC_SYMBOLS;
   readonly logicSequenceLength = LOGIC_SEQUENCE_LENGTH;
+  readonly memorySymbols = MEMORY_SYMBOLS;
+  readonly memoryMaxRound = MEMORY_MAX_ROUND;
 
   readonly focusProgress = signal(0);
   readonly cursorPos = signal({ x: GAME_WIDTH / 2, y: GAME_HEIGHT / 2 });
   readonly targetPos = signal({ x: GAME_WIDTH / 2, y: GAME_HEIGHT / 2 });
-  readonly mashProgress = signal(0);
   readonly ballX = signal(BALANCE_TRACK_WIDTH / 2);
   readonly balanceProgress = signal(0);
   readonly throwerPos = signal(COCONUT_TRACK_WIDTH / 2);
@@ -871,6 +1015,16 @@ export class MinigameOverlayComponent implements OnDestroy {
   readonly logicPreviewIndex = signal(-1);
   readonly logicInputIndex = signal(0);
   readonly logicPhase = signal<'preview' | 'input'>('preview');
+  readonly stompProgress = signal(0);
+  readonly memorySequence = signal<number[]>([]);
+  readonly memoryRound = signal(1);
+  readonly memoryPreviewIndex = signal(-1);
+  readonly memoryInputIndex = signal(0);
+  readonly memoryPhase = signal<'preview' | 'input'>('preview');
+  readonly powerValue = signal(0);
+  readonly anchorProgress = signal(0);
+  readonly blockPositions = signal<number[]>([0, 0, 0]);
+  readonly blockAligned = signal<boolean[]>([false, false, false]);
   readonly remainingMs = signal(0);
   /** Zeigt nach Abschluss eines Minigames kurz "Geschafft!" oder "Nicht geschafft...", bevor die Story weitergeht. */
   readonly resultFeedback = signal<'success' | 'failure' | null>(null);
@@ -884,7 +1038,6 @@ export class MinigameOverlayComponent implements OnDestroy {
         const type = this.minigames.activeMinigame();
         this.stopLoop();
         if (type === 'focus-hold') this.startFocusHold();
-        if (type === 'click-mash') this.startClickMash();
         if (type === 'balance') this.startBalance();
         if (type === 'coconut-throw') this.startCoconutThrow();
         if (type === 'footprint-track') this.startFootprintTrack();
@@ -895,14 +1048,16 @@ export class MinigameOverlayComponent implements OnDestroy {
         if (type === 'reaction-box') this.startReactionBox();
         // Wiederverwendung bestehender Mechaniken mit neuer Beschriftung:
         if (type === 'trophy-focus') this.startFocusHold();
-        if (type === 'boast-mash') this.startClickMash();
         if (type === 'calm-restraint') this.startFocusHold();
-        if (type === 'reckless-posture') this.startClickMash();
+        // Vormals ebenfalls 'click-mash'-Kopien, jetzt jeweils eigene Mechanik:
+        if (type === 'click-mash') this.startStompAlternate();
+        if (type === 'boast-mash') this.startMemorySequence();
+        if (type === 'reckless-posture') this.startPowerGauge();
+        if (type === 'anchor-heave') this.startAnchorPullDrag();
+        if (type === 'lever-heave') this.startBlockShove();
         if (type === 'dance-battle') this.startDanceBattle();
         if (type === 'domino-match') this.startDominoMatch();
-        if (type === 'anchor-heave') this.startClickMash();
         if (type === 'logic-puzzle') this.startLogicPuzzle();
-        if (type === 'lever-heave') this.startClickMash();
         if (type === 'kayak-paddle') this.startRhythmTap();
       },
       { allowSignalWrites: true },
@@ -983,16 +1138,98 @@ export class MinigameOverlayComponent implements OnDestroy {
     }
   }
 
+  onStompClick(side: 'left' | 'right'): void {
+    if (side === this.lastStompSide) return; // dieselbe Seite zweimal hintereinander zählt nicht
+    this.lastStompSide = side;
+    this.stompProgress.update((p) => Math.min(100, p + STOMP_GAIN_PER_HIT));
+    if (this.stompProgress() >= 100) {
+      this.finishWithResult(true);
+    }
+  }
+
+  onMemorySymbolClick(symbolIndex: number): void {
+    if (this.memoryPhase() !== 'input') return;
+
+    const round = this.memoryRound();
+    const sequence = this.memorySequence();
+    const position = this.memoryInputIndex();
+
+    if (symbolIndex !== sequence[position]) {
+      this.memoryInputIndex.set(0); // falsch: diese Runde nochmal von vorn eingeben
+      return;
+    }
+
+    const next = position + 1;
+    if (next < round) {
+      this.memoryInputIndex.set(next);
+      return;
+    }
+
+    // Runde geschafft.
+    if (round >= MEMORY_MAX_ROUND) {
+      this.finishWithResult(true);
+      return;
+    }
+    const nextRound = round + 1;
+    this.memoryRound.set(nextRound);
+    this.memoryInputIndex.set(0);
+    this.memoryPhase.set('preview');
+    this.runMemoryPreviewForRound(nextRound);
+  }
+
+  onPowerHoldStart(): void {
+    this.powerHeld = true;
+  }
+
+  onPowerHoldEnd(): void {
+    if (!this.powerHeld) return; // z.B. mouseleave nach bereits erfolgtem mouseup
+    this.powerHeld = false;
+
+    const value = this.powerValue();
+    if (value >= POWER_TARGET_MIN && value <= POWER_TARGET_MAX) {
+      this.finishWithResult(true);
+    } else {
+      this.powerValue.set(0); // daneben: nochmal versuchen, Zeit läuft weiter
+    }
+  }
+
+  onAnchorDragStart(event: MouseEvent): void {
+    this.anchorDragStartY = event.clientY;
+  }
+
+  onAnchorDragEnd(event: MouseEvent): void {
+    if (this.anchorDragStartY === null) return;
+    const pulled = this.anchorDragStartY - event.clientY;
+    this.anchorDragStartY = null;
+
+    if (pulled > ANCHOR_PULL_THRESHOLD) {
+      this.anchorProgress.update((p) => Math.min(100, p + ANCHOR_GAIN_PER_PULL));
+      if (this.anchorProgress() >= 100) {
+        this.finishWithResult(true);
+      }
+    }
+  }
+
+  onAnchorDragCancel(): void {
+    this.anchorDragStartY = null; // Maus verlässt den Bereich während gehalten -> Zug verworfen
+  }
+
+  onBlockShoveClick(index: number): void {
+    const positions = [...this.blockPositions()];
+    positions[index] = (positions[index] + 1) % 4;
+    this.blockPositions.set(positions);
+
+    const aligned = positions.map((p, i) => p === this.blockTargets[i]);
+    this.blockAligned.set(aligned);
+
+    if (aligned.every((a) => a)) {
+      this.finishWithResult(true);
+    }
+  }
+
   onFocusMouseMove(event: MouseEvent): void {
     const rect = (event.currentTarget as HTMLElement).getBoundingClientRect();
     this.cursorPos.set({ x: event.clientX - rect.left, y: event.clientY - rect.top });
-  }
-
-  onMashClick(): void {
-    this.mashProgress.update((p) => Math.min(100, p + MASH_GAIN_PER_CLICK));
-    if (this.mashProgress() >= 100) {
-      this.finishWithResult(true);
-    }
   }
 
   onBalanceMouseMove(event: MouseEvent): void {
@@ -1153,20 +1390,6 @@ export class MinigameOverlayComponent implements OnDestroy {
         this.finishWithResult(false);
       }
     }, FOCUS_TICK_MS);
-  }
-
-  private startClickMash(): void {
-    this.mashProgress.set(0);
-    this.remainingMs.set(MASH_DURATION_MS);
-
-    this.intervalId = setInterval(() => {
-      this.mashProgress.update((p) => Math.max(0, p - MASH_DECAY_PER_TICK));
-      this.remainingMs.update((t) => t - MASH_TICK_MS);
-
-      if (this.remainingMs() <= 0) {
-        this.finishWithResult(this.mashProgress() >= 100);
-      }
-    }, MASH_TICK_MS);
   }
 
   private startBalance(): void {
@@ -1401,6 +1624,113 @@ export class MinigameOverlayComponent implements OnDestroy {
         this.finishWithResult(false);
       }
     }, LOGIC_TICK_MS);
+  }
+
+  private startStompAlternate(): void {
+    this.stompProgress.set(0);
+    this.remainingMs.set(STOMP_DURATION_MS);
+    this.lastStompSide = null;
+
+    this.intervalId = setInterval(() => {
+      this.stompProgress.update((p) => Math.max(0, p - STOMP_DECAY_PER_TICK));
+      this.remainingMs.update((t) => t - STOMP_TICK_MS);
+
+      if (this.remainingMs() <= 0) {
+        this.finishWithResult(this.stompProgress() >= 100);
+      }
+    }, STOMP_TICK_MS);
+  }
+
+  private startMemorySequence(): void {
+    const fullSequence = Array.from({ length: MEMORY_MAX_ROUND }, () =>
+      Math.floor(Math.random() * MEMORY_SYMBOLS.length),
+    );
+    this.memorySequence.set(fullSequence);
+    this.memoryRound.set(1);
+    this.memoryInputIndex.set(0);
+    this.memoryPhase.set('preview');
+    this.remainingMs.set(MEMORY_DURATION_MS);
+
+    this.runMemoryPreviewForRound(1);
+
+    this.intervalId = setInterval(() => {
+      this.remainingMs.update((t) => t - MEMORY_TICK_MS);
+      if (this.remainingMs() <= 0) {
+        this.finishWithResult(false);
+      }
+    }, MEMORY_TICK_MS);
+  }
+
+  /** Zeigt die ersten `round` Symbole der Sequenz nacheinander, dann geht's in die Eingabe-Phase. */
+  private runMemoryPreviewForRound(round: number): void {
+    const sequence = this.memorySequence();
+    let previewStep = 0;
+
+    const revealNext = () => {
+      if (previewStep >= round) {
+        this.memoryPreviewIndex.set(-1);
+        this.memoryPhase.set('input');
+        return;
+      }
+      this.memoryPreviewIndex.set(sequence[previewStep]);
+      previewStep++;
+      this.previewTimeoutId = setTimeout(() => {
+        this.memoryPreviewIndex.set(-1);
+        this.previewTimeoutId = setTimeout(revealNext, MEMORY_PREVIEW_GAP_MS);
+      }, MEMORY_PREVIEW_STEP_MS);
+    };
+    revealNext();
+  }
+
+  private startPowerGauge(): void {
+    this.powerValue.set(0);
+    this.powerHeld = false;
+    this.remainingMs.set(POWER_DURATION_MS);
+
+    this.intervalId = setInterval(() => {
+      if (this.powerHeld) {
+        this.powerValue.update((v) => {
+          const next = v + POWER_RISE_PER_TICK;
+          return next > 100 ? 0 : next; // Überlastet: platzt und muss neu anfangen
+        });
+      }
+      this.remainingMs.update((t) => t - POWER_TICK_MS);
+      if (this.remainingMs() <= 0) {
+        this.finishWithResult(false);
+      }
+    }, POWER_TICK_MS);
+  }
+
+  private startAnchorPullDrag(): void {
+    this.anchorProgress.set(0);
+    this.remainingMs.set(ANCHOR_DURATION_MS);
+    this.anchorDragStartY = null;
+
+    this.intervalId = setInterval(() => {
+      this.anchorProgress.update((p) => Math.max(0, p - ANCHOR_DECAY_PER_TICK));
+      this.remainingMs.update((t) => t - ANCHOR_TICK_MS);
+      if (this.remainingMs() <= 0) {
+        this.finishWithResult(this.anchorProgress() >= 100);
+      }
+    }, ANCHOR_TICK_MS);
+  }
+
+  private startBlockShove(): void {
+    this.blockTargets = [
+      1 + Math.floor(Math.random() * 3),
+      1 + Math.floor(Math.random() * 3),
+      1 + Math.floor(Math.random() * 3),
+    ];
+    this.blockPositions.set([0, 0, 0]);
+    this.blockAligned.set([false, false, false]);
+    this.remainingMs.set(BLOCK_DURATION_MS);
+
+    this.intervalId = setInterval(() => {
+      this.remainingMs.update((t) => t - BLOCK_TICK_MS);
+      if (this.remainingMs() <= 0) {
+        this.finishWithResult(this.blockAligned().every((a) => a));
+      }
+    }, BLOCK_TICK_MS);
   }
 
   private startDigSearch(): void {

@@ -17,6 +17,15 @@
  * - 'logic-puzzle' / 'lever-heave': Verlorener Königsschatz, Tempel-Mechanismus.
  * - 'kayak-paddle': Finale, Kajak über die Bucht paddeln – Wiederverwendung
  *   von 'rhythm-tap' mit neuer Beschriftung.
+ *
+ * Die folgenden fünf hatten früher alle dieselbe 1:1-Kopie von 'click-mash'
+ * (als zu eintönig empfunden) und haben jetzt jeweils eine eigenständige,
+ * unterscheidbare Mechanik unter demselben Namen:
+ * - 'click-mash': Raschel-Tier, Stärke – jetzt abwechselndes Zwei-Tasten-Stampfen.
+ * - 'boast-mash': Ä-Buff Schritt 2, Stärke – jetzt wachsende Merk-Sequenz (Simon-Says-artig).
+ * - 'reckless-posture': Dorf Schritt 1, Stärke – jetzt Kraftmesser halten & loslassen.
+ * - 'anchor-heave': Finale, Schiff übernehmen – jetzt wiederholtes Ziehen per Maus-Drag.
+ * - 'lever-heave': Königsschatz, Stärke – jetzt drei Steinblöcke in Position schieben.
  */
 export type MinigameType =
   | 'focus-hold'
