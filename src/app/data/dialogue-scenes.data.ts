@@ -13,119 +13,99 @@ export const DIALOGUE_SCENES: Record<string, DialogueScene> = {
     lines: [
       {
         speaker: 'narrator',
-        text:
-          "Ein Krachen. Ein Splittern. Ein sehr unwürdiges \"Oooomph\". Die Königliche Barke „Wappen von Herford“ ist Geschichte.",
+        text: 'Ein Krachen. Ein Splittern. Die Königliche Barke „Wappen von Herford“ – Geschichte.',
       },
       {
         speaker: 'princess',
         emotion: 'annoyed',
-        text: 'Helix. HELIX. Würden Sie mir freundlicherweise erklären, warum ich gerade mit dem Gesicht in einem Sandhügel liege?',
+        text: 'Helix. Warum liege ich im Sand?',
       },
       {
         speaker: 'helix',
         emotion: 'smug',
-        text: 'Weil das Schicksal große Abenteurer eben genau so empfängt, Eure Durchlaucht. Mit einem gewissen dramatischen Timing.',
-      },
-      {
-        speaker: 'princess',
-        emotion: 'sarcastic',
-        text: 'Das Schicksal hätte auch einfach freundlich winken können.',
-      },
-      {
-        speaker: 'helix',
-        emotion: 'confused',
-        text: 'Das war eine taktische Abkürzung. Durch die "Klippen der Ewigen Ruhe". Sehr berühmt, in gewissen Kreisen.',
+        text: 'Weiche Landung, Durchlaucht. Nur der Ozean war unhöflich.',
       },
       {
         speaker: 'princess',
         emotion: 'annoyed',
-        text: 'Berühmt dafür, dass dort regelmäßig Schiffe verschwinden, ja.',
+        text: 'Der Ozean? Ich dachte, SIE steuern.',
       },
       {
         speaker: 'helix',
         emotion: 'panicked',
-        text: 'Auf der Karte stand ein Ausrufezeichen! Das bedeutet doch eindeutig "hier lang, es lohnt sich"!',
-      },
-      {
-        speaker: 'princess',
-        emotion: 'sarcastic',
-        text: 'Es bedeutet "Vorsicht", Helix. Man kann ein ganzes Königreich daran erkennen, wer diesen Unterschied nicht kennt.',
-      },
-      {
-        speaker: 'narrator',
-        text: 'Von den Piraten, die den Königsschatz gestohlen hatten, fehlt inzwischen jede Spur – ebenso wie von der restlichen Besatzung, die sich beim ersten Donnerschlag klugerweise mit dem Rettungsboot davonmachte.',
-      },
-      {
-        speaker: 'helix',
-        emotion: 'smug',
-        text: 'Kluge Männer, diese Männer. Ich hätte es ihnen fast gleichgetan, wäre da nicht meine sprichwörtliche Tapferkeit gewesen.',
-      },
-      {
-        speaker: 'princess',
-        emotion: 'annoyed',
-        text: 'Ihre "sprichwörtliche Tapferkeit" saß die ganze Zeit neben mir und hat gezittert.',
-      },
-      {
-        speaker: 'narrator',
-        text: 'Zurück bleiben: eine Prinzessin auf Schatzsuche – und ein Mann, der sich selbst für eine Legende hält, obwohl bisher niemand sonst davon gehört hat.',
+        text: 'Tat ich ja! Bis das Steuer eigene Pläne hatte.',
       },
       {
         speaker: 'helix',
         emotion: 'confused',
-        text: 'Ich bin durchaus eine Legende. In bestimmten Hafenstädten. Unter bestimmten Umständen. Meistens, wenn gerade eine Belohnung auf mich ausgesetzt war.',
+        text: 'Außerdem hatte die Karte ein Ausrufezeichen! Das heißt doch "große Sache"!',
       },
       {
         speaker: 'princess',
-        emotion: 'sarcastic',
-        text: 'Legende, oder war das die Alternative zu ein paar Jahren im Kerker Seiner Majestät?',
+        emotion: 'smug',
+        text: 'Es heißt "Vorsicht". Aber was weiß ich schon, ich hab nur die Krone.',
       },
       {
-        speaker: 'helix',
-        emotion: 'panicked',
-        text: 'Das war eine beiderseitige, äußerst faire Vereinbarung!',
-      },
-      {
-        speaker: 'princess',
-        emotion: 'sarcastic',
-        text: 'War das Teil Ihrer heldenhaften Selbstauskunft?',
+        speaker: 'narrator',
+        text: 'Die Crew ist fort. Die Piraten mit dem Königsschatz auch.',
       },
       {
         speaker: 'helix',
         emotion: 'smug',
-        text: 'Das nennt man dramatische Vorgeschichte. Jeder große Abenteurer hat eine.',
+        text: 'Tapfere Burschen. Fast wär ich mitgesprungen.',
       },
       {
         speaker: 'princess',
         emotion: 'sarcastic',
-        text: 'Interessant. Bei Ihnen besteht die Vorgeschichte bisher ausschließlich aus Schiffbrüchen.',
-      },
-      {
-        speaker: 'narrator',
-        text: 'Der Königsschatz ist verschollen, die Piraten sind irgendwo da draußen, und die einzige Spur führt genau hierher: auf diese Insel.',
+        text: 'Ihre Tapferkeit rief sehr laut nach dem Rettungsboot.',
       },
       {
         speaker: 'helix',
-        emotion: 'panicked',
-        text: 'Also gut. Was schlagen Sie vor, Eure Durchlaucht?',
+        emotion: 'smug',
+        text: 'Ein taktischer Ausruf! Ich bin schließlich eine Legende.',
       },
       {
         speaker: 'princess',
-        emotion: 'neutral',
-        text: 'Zuerst: Dieser Sand ist eine Zumutung für jeden anständigen Stoff. Zweitens: Die Strömung kam aus Nordost, wir sind vermutlich südlich der Hauptroute gestrandet. Wir erkunden.',
+        emotion: 'smug',
+        text: 'Eine Legende – wofür? Fürs Stolpern?',
       },
       {
         speaker: 'helix',
         emotion: 'confused',
-        text: 'Woher wissen Sie das bitte?',
+        text: 'Für Mut! Charme! Und... andere Dinge.',
       },
       {
         speaker: 'princess',
         emotion: 'smug',
-        text: 'Man lernt einiges, wenn man nicht nur auf Kissen sitzt, Helix.',
+        text: 'Wenigstens ehrlich, wenn Ihnen nichts einfällt.',
       },
       {
         speaker: 'narrator',
-        text: 'Widerwillig rappeln sich beide auf. Vor ihnen liegt eine Insel voller Nebel, Geheimnisse – und irgendwo darauf, wenn das Glück will, eine Spur zum gestohlenen Schatz.',
+        text: 'Der Schatz ist weg. Die Spur endet hier.',
+      },
+      {
+        speaker: 'helix',
+        emotion: 'panicked',
+        text: 'Und jetzt, Durchlaucht?',
+      },
+      {
+        speaker: 'princess',
+        emotion: 'smug',
+        text: 'Wir erkunden. Sie tragen mein Gepäck.',
+      },
+      {
+        speaker: 'helix',
+        emotion: 'confused',
+        text: 'Wir HABEN kein Gepäck!',
+      },
+      {
+        speaker: 'princess',
+        emotion: 'smug',
+        text: 'Dann tragen Sie meine Laune.',
+      },
+      {
+        speaker: 'narrator',
+        text: 'Widerwillig stehen beide auf. Die Insel wartet.',
       },
     ],
   },
