@@ -65,8 +65,8 @@ export class CounterGame extends MinigameBase {
   private windowId: ReturnType<typeof setTimeout> | null = null;
 
   protected start(): void {
-    this.lives.set(this.easy ? 4 : 3);
-    this.startClock(this.easy ? 19000 : 16000, () => this.finish(false, `${this.hits()}/${this.required} Konter`));
+    this.lives.set(this.tuneInt(3, 4));
+    this.startClock(this.tune(17000, 20000), () => this.finish(false, `${this.hits()}/${this.required} Konter`));
     this.scheduleNext();
   }
 
@@ -126,7 +126,7 @@ export class CounterGame extends MinigameBase {
       const feint = this.hits() > 0 && Math.random() < 0.3;
       this.opening.set({ dir: pick(DIRS), feint });
       if (!feint) this.sfx.play('alert');
-      const windowMs = feint ? 750 : Math.max(380, 760 - this.hits() * 70) + (this.easy ? 200 : 0);
+      const windowMs = feint ? 750 : Math.max(300, Math.max(400, 780 - this.hits() * 65) + this.tune(0, 200));
       this.windowId = this.after(windowMs, () => {
         this.opening.set(null);
         this.windowId = null;

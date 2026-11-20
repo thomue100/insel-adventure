@@ -93,9 +93,9 @@ export class TrackGame extends MinigameBase {
   private expiryId: ReturnType<typeof setTimeout> | null = null;
 
   protected start(): void {
-    this.maxLives = this.easy ? 4 : 3;
+    this.maxLives = this.tuneInt(3, 4);
     this.lives.set(this.maxLives);
-    this.startClock(this.easy ? 20000 : 16000, () => this.finish(false, `${this.hits()}/${this.required} Spuren`));
+    this.startClock(this.tune(18000, 22000), () => this.finish(false, `${this.hits()}/${this.required} Spuren`));
     this.spawnNext();
   }
 
@@ -137,7 +137,7 @@ export class TrackGame extends MinigameBase {
     x = clamp(x, MARGIN, W - MARGIN);
     y = clamp(y, MARGIN, H - MARGIN);
 
-    const life = Math.max(800, 1500 - this.hits() * 90) + (this.easy ? 400 : 0);
+    const life = Math.max(650, Math.max(900, 1600 - this.hits() * 90) + this.tune(0, 400));
     const rot = (this.heading * 180) / Math.PI + 90;
     const prints: Print[] = [{ id: ++this.idCounter, x, y, rot, decoy: false, life }];
 

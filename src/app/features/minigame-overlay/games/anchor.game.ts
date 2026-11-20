@@ -51,13 +51,13 @@ export class AnchorGame extends MinigameBase {
   private wavePhase = 0;
 
   protected start(): void {
-    this.crestThreshold = this.easy ? 0.4 : 0.55;
-    this.startClock(this.easy ? 16000 : 13000, () => this.finish(false, `Anker zu ${Math.round(this.progress())} % oben`));
+    this.crestThreshold = this.tune(0.5, 0.38);
+    this.startClock(this.tune(15000, 18000), () => this.finish(false, `Anker zu ${Math.round(this.progress())} % oben`));
     this.loop((dt, elapsed) => {
       const period = Math.max(1.25, 1.7 - elapsed * 0.03);
       this.wavePhase += (dt / period) * Math.PI * 2;
       this.wave.set(Math.sin(this.wavePhase));
-      const slip = 6 + elapsed * 0.8;
+      const slip = this.tune(5, 3.5) + elapsed * 0.6;
       this.progress.update((p) => Math.max(0, p - slip * dt));
     });
   }

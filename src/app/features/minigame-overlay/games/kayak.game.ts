@@ -81,7 +81,7 @@ export class KayakGame extends MinigameBase {
   });
 
   protected start(): void {
-    this.noiseGain = this.easy ? 0.7 : 1;
+    this.noiseGain = this.tune(0.9, 0.65);
     let d = 260;
     let id = 0;
     while (d < this.trackLength - 120) {
@@ -90,7 +90,7 @@ export class KayakGame extends MinigameBase {
       d += rand(110, 170);
     }
 
-    this.startClock(this.easy ? 26000 : 22000, () => this.finish(false, 'Zu langsam – der Morgen graut.'));
+    this.startClock(this.tune(24000, 28000), () => this.finish(false, 'Zu langsam – der Morgen graut.'));
 
     this.loop((dt) => {
       this.speed *= Math.pow(0.5, dt);

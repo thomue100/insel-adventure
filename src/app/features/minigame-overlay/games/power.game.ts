@@ -59,7 +59,7 @@ export class PowerGame extends MinigameBase {
 
   protected start(): void {
     this.placeZone();
-    this.startClock(this.easy ? 16000 : 13000, () => this.finish(false, `${this.poses()}/${POSES_REQUIRED} Posen`));
+    this.startClock(this.tune(15000, 18000), () => this.finish(false, `${this.poses()}/${POSES_REQUIRED} Posen`));
     this.loop((dt) => {
       if (!this.holding) return;
       this.holdTime += dt;
@@ -115,7 +115,7 @@ export class PowerGame extends MinigameBase {
   }
 
   private placeZone(): void {
-    const width = ZONE_WIDTHS[Math.min(this.poses(), ZONE_WIDTHS.length - 1)] + (this.easy ? 6 : 0);
+    const width = ZONE_WIDTHS[Math.min(this.poses(), ZONE_WIDTHS.length - 1)] + this.tune(2, 7);
     const min = rand(35, 95 - width);
     this.zoneMin.set(min);
     this.zoneMax.set(min + width);

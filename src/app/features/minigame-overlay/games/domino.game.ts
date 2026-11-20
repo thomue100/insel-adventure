@@ -235,7 +235,7 @@ export class DominoGame extends MinigameBase {
       return;
     }
     // Normal: Bilone legt geschickt den schwersten Stein ab. Leicht: eher zufällig.
-    const choice = this.easy ? pick(options) : options.reduce((best, t) => (t.a + t.b > best.a + best.b ? t : best));
+    const choice = this.tune(0, 1) >= 1 ? pick(options) : options.reduce((best, t) => (t.a + t.b > best.a + best.b ? t : best));
     const side: Side = this.fits(choice, 'left') ? 'left' : 'right';
     this.place(choice, side, 'opponent');
   }
@@ -246,7 +246,7 @@ export class DominoGame extends MinigameBase {
     this.turn.set('over');
     const mine = pips(this.hand());
     const theirs = pips(this.opponentHand());
-    const win = this.easy ? mine <= theirs : mine < theirs;
+    const win = this.tune(0, 1) >= 1 ? mine <= theirs : mine < theirs;
     this.finish(win, `Blockiert! Deine Augen: ${mine}, ihre: ${theirs}.`);
     return true;
   }

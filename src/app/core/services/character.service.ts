@@ -58,7 +58,9 @@ export class CharacterService {
 
     this._partyPosition.set(target);
     this._hasMoved.set(true);
-    this.islandMap.revealAround(target, PARTY_VISION_RANGE);
+    // Berge und Aussichtspunkt erlauben einen weiteren Blick über die Insel.
+    const visionBonus = this.islandMap.getTile(target)?.visionBonus ?? 0;
+    this.islandMap.revealAround(target, PARTY_VISION_RANGE + visionBonus);
     this.islandMap.markExplored(target);
     return true;
   }

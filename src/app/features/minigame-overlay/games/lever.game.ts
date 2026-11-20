@@ -57,9 +57,9 @@ export class LeverGame extends MinigameBase {
   private keyHolding = false;
 
   protected start(): void {
-    const pushRate = this.easy ? 30 : 26;
-    const drain = this.easy ? 30 : 38;
-    this.startClock(this.easy ? 18000 : 15000, () => this.finish(false, `Hebel zu ${Math.round(this.progress())} % bewegt`));
+    const pushRate = this.tune(28, 32);
+    const drain = this.tune(33, 27);
+    this.startClock(this.tune(18000, 21000), () => this.finish(false, `Hebel zu ${Math.round(this.progress())} % bewegt`));
 
     this.loop((dt) => {
       const active = (this.holding || this.keyHolding) && !this.exhausted();

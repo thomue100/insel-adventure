@@ -48,10 +48,10 @@ export class StompGame extends MinigameBase {
   private gain = 8;
 
   protected start(): void {
-    this.gain = this.easy ? 9.5 : 8;
-    this.startClock(this.easy ? 10000 : 8000, () => this.finish(false, `Lärm-Pegel: ${Math.round(this.progress())} %`));
+    this.gain = this.tune(9, 10.5);
+    this.startClock(this.tune(9000, 11000), () => this.finish(false, `Lärm-Pegel: ${Math.round(this.progress())} %`));
     this.loop((dt, elapsed) => {
-      const decayPerSec = 10 + elapsed * 3.5; // das Tier gewöhnt sich an den Lärm
+      const decayPerSec = this.tune(8, 6) + elapsed * this.tune(2.5, 1.8); // das Tier gewöhnt sich an den Lärm
       this.progress.update((p) => Math.max(0, p - decayPerSec * dt));
     });
     this.scheduleRoar();
@@ -106,7 +106,7 @@ export class StompGame extends MinigameBase {
     this.after(rand(1600, 2600), () => {
       this.roarWindow.set(true);
       this.sfx.play('alert');
-      this.after(this.easy ? 900 : 700, () => {
+      this.after(this.tune(800, 1000), () => {
         this.roarWindow.set(false);
         this.scheduleRoar();
       });

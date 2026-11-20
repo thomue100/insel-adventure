@@ -2,6 +2,7 @@ import { ChangeDetectionStrategy, Component, HostListener, OnDestroy, computed, 
 import { MinigameService } from '../../core/services/minigame.service';
 import { CharacterService } from '../../core/services/character.service';
 import { SfxService } from '../../core/services/sfx.service';
+import { DIFFICULTY_LEVELS, DifficultyService } from '../../core/services/difficulty.service';
 import { MINIGAME_INFO } from '../../data/minigames.data';
 import { MinigameResult } from './minigame-base';
 import { FocusHoldGame } from './games/focus-hold.game';
@@ -85,6 +86,19 @@ const RESULT_DURATION_MS = 2200;
               @if (easy()) {
                 <div class="mg-advantage">{{ badgeTitle() }}</div>
               }
+              <div class="mg-levels" role="radiogroup" aria-label="Schwierigkeit">
+                @for (l of levels; track l.id) {
+                  <button
+                    class="mg-level"
+                    role="radio"
+                    [attr.aria-checked]="difficulty.level() === l.id"
+                    [class.active]="difficulty.level() === l.id"
+                    (click)="difficulty.setLevel(l.id)"
+                  >
+                    {{ l.icon }} {{ l.label }}
+                  </button>
+                }
+              </div>
               <button class="mg-btn" (click)="startCountdown()">Los geht's! <small>(Leertaste)</small></button>
             }
             @case ('countdown') {
@@ -92,26 +106,26 @@ const RESULT_DURATION_MS = 2200;
             }
             @case ('play') {
               @switch (type) {
-                @case ('focus-hold') { <mg-focus-hold [easy]="easy()" (finished)="onFinished($event)" /> }
-                @case ('click-mash') { <mg-stomp [easy]="easy()" (finished)="onFinished($event)" /> }
-                @case ('footprint-track') { <mg-track [easy]="easy()" (finished)="onFinished($event)" /> }
-                @case ('swipe-mash') { <mg-slash [easy]="easy()" (finished)="onFinished($event)" /> }
-                @case ('balance') { <mg-balance [easy]="easy()" (finished)="onFinished($event)" /> }
-                @case ('coconut-throw') { <mg-coconut [easy]="easy()" (finished)="onFinished($event)" /> }
-                @case ('dig-search') { <mg-dig [easy]="easy()" (finished)="onFinished($event)" /> }
-                @case ('pattern-scan') { <mg-scan [easy]="easy()" (finished)="onFinished($event)" /> }
-                @case ('rhythm-tap') { <mg-beat [easy]="easy()" (finished)="onFinished($event)" /> }
-                @case ('reaction-box') { <mg-counter [easy]="easy()" (finished)="onFinished($event)" /> }
-                @case ('trophy-focus') { <mg-story-react [easy]="easy()" (finished)="onFinished($event)" /> }
-                @case ('boast-mash') { <mg-simon [easy]="easy()" (finished)="onFinished($event)" /> }
-                @case ('calm-restraint') { <mg-tug [easy]="easy()" (finished)="onFinished($event)" /> }
-                @case ('reckless-posture') { <mg-power [easy]="easy()" (finished)="onFinished($event)" /> }
-                @case ('dance-battle') { <mg-dance [easy]="easy()" (finished)="onFinished($event)" /> }
-                @case ('domino-match') { <mg-domino [easy]="easy()" (finished)="onFinished($event)" /> }
-                @case ('anchor-heave') { <mg-anchor [easy]="easy()" (finished)="onFinished($event)" /> }
-                @case ('logic-puzzle') { <mg-wheels [easy]="easy()" (finished)="onFinished($event)" /> }
-                @case ('lever-heave') { <mg-lever [easy]="easy()" (finished)="onFinished($event)" /> }
-                @case ('kayak-paddle') { <mg-kayak [easy]="easy()" (finished)="onFinished($event)" /> }
+                @case ('focus-hold') { <mg-focus-hold [easy]="easy()" [level]="difficulty.level()" (finished)="onFinished($event)" /> }
+                @case ('click-mash') { <mg-stomp [easy]="easy()" [level]="difficulty.level()" (finished)="onFinished($event)" /> }
+                @case ('footprint-track') { <mg-track [easy]="easy()" [level]="difficulty.level()" (finished)="onFinished($event)" /> }
+                @case ('swipe-mash') { <mg-slash [easy]="easy()" [level]="difficulty.level()" (finished)="onFinished($event)" /> }
+                @case ('balance') { <mg-balance [easy]="easy()" [level]="difficulty.level()" (finished)="onFinished($event)" /> }
+                @case ('coconut-throw') { <mg-coconut [easy]="easy()" [level]="difficulty.level()" (finished)="onFinished($event)" /> }
+                @case ('dig-search') { <mg-dig [easy]="easy()" [level]="difficulty.level()" (finished)="onFinished($event)" /> }
+                @case ('pattern-scan') { <mg-scan [easy]="easy()" [level]="difficulty.level()" (finished)="onFinished($event)" /> }
+                @case ('rhythm-tap') { <mg-beat [easy]="easy()" [level]="difficulty.level()" (finished)="onFinished($event)" /> }
+                @case ('reaction-box') { <mg-counter [easy]="easy()" [level]="difficulty.level()" (finished)="onFinished($event)" /> }
+                @case ('trophy-focus') { <mg-story-react [easy]="easy()" [level]="difficulty.level()" (finished)="onFinished($event)" /> }
+                @case ('boast-mash') { <mg-simon [easy]="easy()" [level]="difficulty.level()" (finished)="onFinished($event)" /> }
+                @case ('calm-restraint') { <mg-tug [easy]="easy()" [level]="difficulty.level()" (finished)="onFinished($event)" /> }
+                @case ('reckless-posture') { <mg-power [easy]="easy()" [level]="difficulty.level()" (finished)="onFinished($event)" /> }
+                @case ('dance-battle') { <mg-dance [easy]="easy()" [level]="difficulty.level()" (finished)="onFinished($event)" /> }
+                @case ('domino-match') { <mg-domino [easy]="easy()" [level]="difficulty.level()" (finished)="onFinished($event)" /> }
+                @case ('anchor-heave') { <mg-anchor [easy]="easy()" [level]="difficulty.level()" (finished)="onFinished($event)" /> }
+                @case ('logic-puzzle') { <mg-wheels [easy]="easy()" [level]="difficulty.level()" (finished)="onFinished($event)" /> }
+                @case ('lever-heave') { <mg-lever [easy]="easy()" [level]="difficulty.level()" (finished)="onFinished($event)" /> }
+                @case ('kayak-paddle') { <mg-kayak [easy]="easy()" [level]="difficulty.level()" (finished)="onFinished($event)" /> }
               }
             }
             @case ('result') {
@@ -177,6 +191,12 @@ const RESULT_DURATION_MS = 2200;
     .mg-controls { font-size: 0.78rem; color: #cfcabe; opacity: 0.85; text-align: center; }
     .mg-advantage { font-size: 0.75rem; color: #cfeccc; text-align: center; }
     .mg-btn small { font-weight: normal; opacity: 0.7; }
+    .mg-levels { display: flex; gap: 4px; padding: 3px; background: rgba(255, 255, 255, 0.05); border-radius: 999px; }
+    .mg-level {
+      font-family: inherit; font-size: 0.75rem; padding: 0.3rem 0.65rem; border-radius: 999px; cursor: pointer;
+      background: none; border: 1px solid transparent; color: #cfcabe;
+    }
+    .mg-level.active { background: rgba(224, 164, 88, 0.2); border-color: var(--accent-color, #e0a458); color: var(--text-primary, #f2ede3); }
     .mg-countdown { font-size: 4rem; font-weight: bold; color: var(--accent-color, #e0a458); min-height: 180px; display: flex; align-items: center; animation: pop-in 0.25s ease-out; }
     .result-feedback { display: flex; flex-direction: column; align-items: center; gap: 0.4rem; padding: 1rem 0.5rem; cursor: pointer; animation: pop-in 0.2s ease-out; text-align: center; }
     .result-icon { font-size: 3rem; }
@@ -213,9 +233,12 @@ export class MinigameOverlayComponent implements OnDestroy {
     return lead ? `Vorteil durch ${lead.displayName} (${lead.tagline}): etwas mehr Zeit und Spielraum.` : '';
   });
 
+  readonly levels = DIFFICULTY_LEVELS;
+
   constructor(
     readonly minigames: MinigameService,
     readonly characters: CharacterService,
+    readonly difficulty: DifficultyService,
     private readonly sfx: SfxService,
   ) {
     effect(

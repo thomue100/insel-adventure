@@ -65,9 +65,9 @@ export class TugGame extends MinigameBase {
   private lunge = 0;
 
   protected start(): void {
-    this.zone = this.easy ? 0.32 : 0.25;
-    this.lives.set(this.easy ? 3 : 2);
-    this.startClock(this.easy ? 16000 : 13000, () => this.finish(false, `Helix zu ${Math.round(this.progress())} % beruhigt`));
+    this.zone = this.tune(0.28, 0.35);
+    this.lives.set(this.tuneInt(3, 4));
+    this.startClock(this.tune(14000, 17000), () => this.finish(false, `Helix zu ${Math.round(this.progress())} % beruhigt`));
 
     this.loop((dt, elapsed) => {
       this.drift = clamp(this.drift + rand(-1, 1) * dt * 2, -0.6, 0.6);
@@ -116,7 +116,7 @@ export class TugGame extends MinigameBase {
       const dir = pick([-1, 1]);
       this.warning.set(dir);
       this.sfx.play('alert');
-      this.after(this.easy ? 700 : 550, () => {
+      this.after(this.tune(650, 800), () => {
         this.lunge = dir * 1.2;
         this.after(700, () => {
           this.lunge = 0;

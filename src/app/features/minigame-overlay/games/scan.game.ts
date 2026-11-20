@@ -59,14 +59,14 @@ export class ScanGame extends MinigameBase {
   private paused = false;
 
   protected start(): void {
-    this.lives.set(this.easy ? 4 : 3);
-    this.startClock(this.easy ? 36000 : 30000, () => this.finish(false, `${this.roundIndex()}/${this.totalRounds} Hinweise`));
+    this.lives.set(this.tuneInt(3, 4));
+    this.startClock(this.tune(32000, 38000), () => this.finish(false, `${this.roundIndex()}/${this.totalRounds} Hinweise`));
     this.setupRound(0);
 
     this.loop((dt) => {
       if (this.paused) return;
       this.stepAccumulator += dt * 1000;
-      const stepMs = [560, 450, 360][this.roundIndex()] + (this.easy ? 120 : 0);
+      const stepMs = [560, 450, 360][this.roundIndex()] + this.tune(60, 160);
       if (this.stepAccumulator >= stepMs) {
         this.stepAccumulator = 0;
         this.active.update((i) => (i + 1) % CELLS);

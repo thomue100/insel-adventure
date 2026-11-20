@@ -83,7 +83,7 @@ export class SlashGame extends MinigameBase {
   private spawnTimer = 0;
 
   protected start(): void {
-    this.required = this.easy ? 11 : 14;
+    this.required = this.tuneInt(12, 9, 6);
     this.startClock(12000, () => this.finish(false, `${this.cut()}/${this.required} Lianen`));
 
     this.loop((dt, elapsed) => {

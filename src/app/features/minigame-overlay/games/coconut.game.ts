@@ -65,9 +65,9 @@ export class CoconutGame extends MinigameBase {
   private hitTolerance = 22;
 
   protected start(): void {
-    this.maxAmmo = this.easy ? 8 : 6;
+    this.maxAmmo = this.tuneInt(7, 9, 4);
     this.ammo.set(this.maxAmmo);
-    this.hitTolerance = this.easy ? 28 : 22;
+    this.hitTolerance = this.tune(25, 31);
     this.startClock(16000, () => this.finish(false, `${this.hits()}/${this.required} Treffer`));
 
     this.loop((dt) => {
@@ -87,7 +87,7 @@ export class CoconutGame extends MinigameBase {
           this.direction *= -1;
         }
       }
-      const speed = 110 + this.hits() * 50;
+      const speed = 110 + this.hits() * this.tune(35, 20);
       let x = this.monkeyX() + this.direction * speed * dt;
       if (x < 16 || x > W - 16) {
         this.direction *= -1;

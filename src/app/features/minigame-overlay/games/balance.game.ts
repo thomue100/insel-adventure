@@ -48,8 +48,8 @@ export class BalanceGame extends MinigameBase {
   private readonly phase = rand(0, Math.PI * 2);
 
   protected start(): void {
-    this.zoneHalf = this.easy ? 38 : 30;
-    this.startClock(this.easy ? 14000 : 11000, () => this.finish(false, `${Math.round(this.progress())} % Vertrauen`));
+    this.zoneHalf = this.tune(32, 40);
+    this.startClock(this.tune(12000, 15000), () => this.finish(false, `${Math.round(this.progress())} % Vertrauen`));
 
     this.loop((dt, elapsed) => {
       // Affe wandert, anfangs kaum, später deutlich.
@@ -83,7 +83,7 @@ export class BalanceGame extends MinigameBase {
       this.gustWarning.set(dir);
       this.sfx.play('alert');
       this.after(650, () => {
-        this.gustForce = dir * (this.easy ? 700 : 950);
+        this.gustForce = dir * this.tune(850, 600);
         this.after(550, () => {
           this.gustForce = 0;
           this.gustWarning.set(0);

@@ -65,8 +65,8 @@ export class DigGame extends MinigameBase {
 
   protected start(): void {
     this.target = randInt(0, COLS * ROWS - 1);
-    this.attempts.set(this.easy ? 6 : 5);
-    this.startClock(this.easy ? 30000 : 25000, () => this.finish(false, 'Die Zeit ist um.'));
+    this.attempts.set(this.tuneInt(5, 6, 3));
+    this.startClock(this.tune(30000, 36000), () => this.finish(false, 'Die Zeit ist um.'));
   }
 
   hintFor(dist: number): { icon: string; label: string } {

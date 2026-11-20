@@ -67,10 +67,10 @@ export class SimonGame extends MinigameBase {
   private sequence: number[] = [];
 
   protected start(): void {
-    this.maxRound = this.easy ? 4 : 5;
-    this.lives.set(this.easy ? 3 : 2);
+    this.maxRound = this.tuneInt(5, 4, 3);
+    this.lives.set(this.tuneInt(2, 3));
     this.sequence = Array.from({ length: this.maxRound }, () => randInt(0, PADS.length - 1));
-    this.startClock(this.easy ? 55000 : 45000, () => this.finish(false, `Runde ${this.round()} nicht geschafft`));
+    this.startClock(this.tune(45000, 55000), () => this.finish(false, `Runde ${this.round()} nicht geschafft`));
     this.after(500, () => this.playPreview());
   }
 

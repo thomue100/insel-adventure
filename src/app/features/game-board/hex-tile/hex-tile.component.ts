@@ -19,10 +19,14 @@ import { AdventureService } from '../../../core/services/adventure.service';
       [style.--tile-color]="tile.discoveryStatus !== 'hidden' ? biomeColor : 'transparent'"
       (click)="tileClick.emit(tile)"
     />
-    @if (tile.discoveryStatus !== 'hidden') {
-      @if (isReadyForAdventure()) {
-        <svg:circle [attr.cx]="center.x" [attr.cy]="center.y" [attr.r]="size * 0.85" class="ready-glow" />
+    <!-- Ziel des nächsten Abenteuers: leuchtet auch im Nebel, damit man es findet. -->
+    @if (isReadyForAdventure()) {
+      <svg:circle [attr.cx]="center.x" [attr.cy]="center.y" [attr.r]="size * 0.85" class="ready-glow" />
+      @if (tile.discoveryStatus === 'hidden') {
+        <svg:text [attr.x]="center.x" [attr.y]="center.y + 6" text-anchor="middle" class="tile-icon fog-goal">❓</svg:text>
       }
+    }
+    @if (tile.discoveryStatus !== 'hidden') {
       <svg:text [attr.x]="center.x" [attr.y]="center.y + 5" text-anchor="middle" class="tile-icon">
         {{ biomeIcon }}
       </svg:text>
@@ -49,6 +53,9 @@ import { AdventureService } from '../../../core/services/adventure.service';
       font-size: 18px;
       pointer-events: none;
       user-select: none;
+    }
+    .fog-goal {
+      opacity: 0.8;
     }
     .marker-dot {
       fill: var(--accent-color, #e0a458);

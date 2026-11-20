@@ -13,6 +13,7 @@ import {
   signal,
 } from '@angular/core';
 import { SfxService } from '../../core/services/sfx.service';
+import { DifficultyLevel } from '../../core/services/difficulty.service';
 
 export interface MinigameResult {
   success: boolean;
@@ -85,6 +86,7 @@ export function isKey(event: KeyboardEvent, ...keys: string[]): boolean {
 @Directive()
 export abstract class MinigameBase implements OnInit, OnDestroy {
   @Input() easy = false;
+  @Input() level: DifficultyLevel = 'normal';
   @Output() readonly finished = new EventEmitter<MinigameResult>();
 
   protected readonly sfx = inject(SfxService);
@@ -114,6 +116,22 @@ export abstract class MinigameBase implements OnInit, OnDestroy {
   }
 
   protected abstract start(): void;
+
+  /**
+   * Schwierigkeits-Stellschraube: liefert `normal` und verschiebt den Wert pro
+   * Erleichterungsstufe um (easier − normal). Stufen: Skill-Vorteil +1,
+   * "Entspannt" +1, "Knifflig" −1 (dann wird über `normal` hinaus erschwert).
+   */
+  protected tune(normal: number, easier: number): number {
+    const steps = (this.easy ? 1 : 0) + (this.level === 'relaxed' ? 1 : this.level === 'tricky' ? -1 : 0);
+    return normal + (easier - normal) * steps;
+  }
+
+  /** Wie `tune`, aber ganzzahlig und mindestens `min` (für Leben, Versuche, Treffer …). */
+  protected tuneInt(normal: number, easier: number, min = 1): number {
+    return Math.max(min, Math.round(this.tune(normal, easier)));
+  }
+
   protected onKeyDown(_event: KeyboardEvent): void {}
   protected onKeyUp(_event: KeyboardEvent): void {}
 

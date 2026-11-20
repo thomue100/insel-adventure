@@ -9,6 +9,8 @@ export class DialogueService {
   private readonly _playedSceneIds = signal<Set<string>>(new Set());
   /** Callback, der aufgerufen wird, sobald die aktuelle Szene beendet ist. */
   private onSceneEnd: (() => void) | null = null;
+  /** Szenen, die angefragt wurden, während schon eine lief. */
+  private readonly queue: Array<{ scene: DialogueScene; onComplete?: () => void }> = [];
 
   readonly activeScene = this._activeScene.asReadonly();
   readonly currentLine = computed<DialogueLine | null>(() => {
@@ -33,6 +35,12 @@ export class DialogueService {
   playScene(scene: DialogueScene, onComplete?: () => void): void {
     if (scene.once && this._playedSceneIds().has(scene.id)) {
       onComplete?.();
+      return;
+    }
+    // Läuft schon eine Szene, wird die neue hinten angestellt statt die
+    // laufende (samt ihrem Callback) zu überschreiben.
+    if (this._activeScene()) {
+      this.queue.push({ scene, onComplete });
       return;
     }
     this._activeScene.set(scene);
@@ -63,6 +71,10 @@ export class DialogueService {
     const callback = this.onSceneEnd;
     this.onSceneEnd = null;
     callback?.();
+
+    // Wartende Szene abspielen, sofern der Callback nicht selbst schon eine gestartet hat.
+    const next = this.queue.shift();
+    if (next) this.playScene(next.scene, next.onComplete);
   }
 
   hasPlayed(sceneId: string): boolean {

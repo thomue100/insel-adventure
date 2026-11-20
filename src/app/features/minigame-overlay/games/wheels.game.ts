@@ -82,8 +82,8 @@ export class WheelsGame extends MinigameBase {
 
     this.target.set(target);
     this.current.set(current);
-    this.movesLeft.set(optimal + (this.easy ? 6 : 3));
-    this.startClock(this.easy ? 45000 : 35000, () => this.finish(false, 'Der Mechanismus rastet ein – zu spät.'));
+    this.movesLeft.set(optimal + this.tuneInt(4, 7, 1));
+    this.startClock(this.tune(40000, 50000), () => this.finish(false, 'Der Mechanismus rastet ein – zu spät.'));
   }
 
   protected override onKeyDown(event: KeyboardEvent): void {

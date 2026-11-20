@@ -99,6 +99,14 @@ Der Timer startet erst nach "Los geht's!".
 gewählten Hauptfigur, läuft das Spiel mit `easy = true` (mehr Zeit/Toleranz) und zeigt
 ein "Vorteil"-Abzeichen. So wirkt sich die Figurenwahl auf jede Entscheidung aus.
 
+**Schwierigkeit:** Auf der Anleitungskarte wählbar (Entspannt / Normal / Knifflig, gespeichert
+in localStorage, `DifficultyService`). In den Spielen über `tune(normal, leichter)` bzw.
+`tuneInt(...)` aus `MinigameBase`: jede Erleichterungsstufe (Skill-Vorteil, Entspannt) verschiebt
+den Wert Richtung `leichter`, Knifflig in die Gegenrichtung.
+
+**Wegweiser:** `QuestService` ermittelt das nächste startbereite Abenteuer und sein Feld; das HUD
+zeigt Titel, Richtung und Entfernung, das Feld leuchtet auch im Nebel (❓).
+
 Alle Spiele sind mit Maus, Touch (Pointer-Events) und Tastatur spielbar. Emojis nur aus
 dem Bestand, den Windows 10 darstellen kann (z.B. kein 🪨/🪵/🛖).
 

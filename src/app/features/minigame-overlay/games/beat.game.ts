@@ -79,8 +79,8 @@ export class BeatGame extends MinigameBase {
   });
 
   protected start(): void {
-    this.goal = this.easy ? 60 : 70;
-    const scale = this.easy ? 1.4 : 1;
+    this.goal = this.tune(65, 55);
+    const scale = this.tune(1.1, 1.45);
     this.perfectWindow = 70 * scale;
     this.goodWindow = 150 * scale;
 

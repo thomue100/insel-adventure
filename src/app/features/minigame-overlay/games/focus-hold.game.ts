@@ -74,18 +74,18 @@ export class FocusHoldGame extends MinigameBase {
   private movedWhileFrozen = 0;
 
   protected start(): void {
-    this.radius = this.easy ? 38 : 30;
-    this.startClock(this.easy ? 13000 : 10000, () => this.finish(false, `${Math.round(this.progress())} % Ruhe`));
+    this.radius = this.tune(34, 42);
+    this.startClock(this.tune(12000, 15000), () => this.finish(false, `${Math.round(this.progress())} % Ruhe`));
 
     this.loop((dt, elapsed) => {
       if (this.frozen()) return;
-      this.pathT += dt * (0.8 + elapsed * 0.08); // wird mit der Zeit nervöser
+      this.pathT += dt * (this.tune(0.75, 0.6) + elapsed * this.tune(0.06, 0.04)); // wird mit der Zeit nervöser
       const t = this.pathT;
       this.target.set({
         x: clamp(W / 2 + 108 * Math.sin(t * 0.9 + this.phaseX) + rand(-3, 3), 20, W - 20),
         y: clamp(H / 2 + 60 * Math.sin(t * 1.37 + this.phaseY) + rand(-3, 3), 20, H - 20),
       });
-      const gainPerSec = this.onTarget() ? 26 : -18;
+      const gainPerSec = this.onTarget() ? 26 : -this.tune(13, 9);
       this.progress.update((p) => clamp(p + gainPerSec * dt, 0, 100));
       this.checkWin();
     });
@@ -103,7 +103,7 @@ export class FocusHoldGame extends MinigameBase {
       this.frozen.set(true);
       this.movedWhileFrozen = 0;
       this.sfx.play('alert');
-      this.after(this.easy ? 800 : 1000, () => {
+      this.after(this.tune(900, 750), () => {
         this.frozen.set(false);
         if (this.movedWhileFrozen > 14) {
           this.progress.update((p) => Math.max(0, p - 22));

@@ -87,8 +87,8 @@ export class DanceGame extends MinigameBase {
   });
 
   protected start(): void {
-    this.rivalScore = randInt(12, 14) - (this.easy ? 2 : 0);
-    const scale = this.easy ? 1.3 : 1;
+    this.rivalScore = randInt(11, 13) - Math.round(this.tune(0, 2));
+    const scale = this.tune(1.15, 1.45);
     this.perfectWindow = 70 * scale;
     this.goodWindow = 130 * scale;
 

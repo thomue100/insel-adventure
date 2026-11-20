@@ -44,12 +44,17 @@ export class InteractionService {
     if (isFirstStepEver) {
       this.adventures.tryStartFromLocation('rustling-creature');
     } else {
-      this.triggerTileEvent(target);
+      // Abenteuer haben Vorrang: Startet hier eines, darf kein anderer Dialog
+      // dazwischenfunken (sonst würde dessen Einleitung überschrieben und das
+      // Abenteuer bliebe ohne Entscheidung hängen).
       this.triggerLocationAdventure(target);
+      if (this.adventures.activeAdventureId()) return { moved: true };
+
+      this.triggerTileEvent(target);
 
       // Nur auf sonst "leeren" Feldern (kein Event, kein besonderer Ort) und nur
       // beim allerersten Betreten - verhindert Leerlauf, ohne die Karte zuzuspammen.
-      if (!wasAlreadyExplored && !tile.event && !tile.interactable) {
+      if (!wasAlreadyExplored && !tile.event && !tile.interactable && !tile.adventureTrigger) {
         this.ambientEvents.tryTrigger(tile.biome);
       }
     }

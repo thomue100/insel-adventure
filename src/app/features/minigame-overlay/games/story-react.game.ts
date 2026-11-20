@@ -102,7 +102,7 @@ export class StoryReactGame extends MinigameBase {
   private lineTimeoutId: ReturnType<typeof setTimeout> | null = null;
 
   protected start(): void {
-    this.goal = this.easy ? 60 : 70;
+    this.goal = this.tune(65, 55);
     const pool = shuffle(
       (Object.keys(PHRASES) as Reaction[]).flatMap((reaction) =>
         shuffle(PHRASES[reaction]).slice(0, 3).map((text) => ({ text, expected: reaction })),
@@ -111,7 +111,7 @@ export class StoryReactGame extends MinigameBase {
     this.script = pool.slice(0, LINE_COUNT).map((entry, i) => ({
       id: i,
       ...entry,
-      durationMs: 2700 - (900 * i) / (LINE_COUNT - 1) + (this.easy ? 700 : 0),
+      durationMs: 2700 - (900 * i) / (LINE_COUNT - 1) + this.tune(200, 800),
     }));
     this.after(400, () => this.showLine(0));
   }

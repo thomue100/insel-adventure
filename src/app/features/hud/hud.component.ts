@@ -3,6 +3,7 @@ import { CharacterService } from '../../core/services/character.service';
 import { IslandMapService } from '../../core/services/island-map.service';
 import { InventoryService } from '../../core/services/inventory.service';
 import { AdventureService } from '../../core/services/adventure.service';
+import { QuestService } from '../../core/services/quest.service';
 
 @Component({
   selector: 'app-hud',
@@ -23,6 +24,14 @@ import { AdventureService } from '../../core/services/adventure.service';
           <span class="step-progress">(Schritt {{ progress.current }}/{{ progress.total }})</span>
         }
       </div>
+      @if (quest.hint(); as hint) {
+        <div class="quest-hint" title="Dorthin, um das nächste Abenteuer zu starten – das Zielfeld leuchtet auf der Karte.">
+          🎯 {{ hint.text }}
+          @if (hint.distance !== null) {
+            <span class="quest-dir"><b>{{ hint.arrow }}</b> {{ hint.distance }} {{ hint.distance === 1 ? 'Feld' : 'Felder' }}</span>
+          }
+        </div>
+      }
       @if (inventory.items().length > 0) {
         <div class="inventory-bar">
           @for (item of inventory.items(); track item.id) {
@@ -68,6 +77,23 @@ import { AdventureService } from '../../core/services/adventure.service';
       opacity: 0.7;
       margin-left: 0.15rem;
     }
+    .quest-hint {
+      background: rgba(224, 164, 88, 0.15);
+      border: 1px solid var(--accent-color, #e0a458);
+      color: #f2ede3;
+      padding: 0.4rem 0.8rem;
+      border-radius: 999px;
+      font-size: 0.82rem;
+      white-space: nowrap;
+    }
+    .quest-dir {
+      margin-left: 0.4rem;
+      opacity: 0.9;
+    }
+    .quest-dir b {
+      font-size: 1.05rem;
+      color: var(--accent-color, #e0a458);
+    }
     .inventory-bar {
       display: flex;
       gap: 0.35rem;
@@ -88,5 +114,6 @@ export class HudComponent {
     readonly islandMap: IslandMapService,
     readonly inventory: InventoryService,
     readonly adventures: AdventureService,
+    readonly quest: QuestService,
   ) {}
 }
