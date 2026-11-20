@@ -230,7 +230,7 @@ export const ADVENTURE_DEFINITIONS: AdventureDefinition[] = [
           },
           {
             id: 'force-lever',
-            label: '🪨 Den Hebel mit Kraft bewegen',
+            label: '🗿 Den Hebel mit Kraft bewegen',
             minigame: 'lever-heave',
             outcomeDialogueSceneId: 'lost-treasure-outcome-lever',
             fallbackDialogueSceneId: 'lost-treasure-fallback-lever',
@@ -255,7 +255,7 @@ export const ADVENTURE_DEFINITIONS: AdventureDefinition[] = [
         choices: [
           {
             id: 'domino-challenge',
-            label: '🁢 Das Domino-Spiel annehmen',
+            label: '🎲 Das Domino-Spiel annehmen',
             minigame: 'domino-match',
             outcomeDialogueSceneId: 'pirate-bay-step1-outcome',
             fallbackDialogueSceneId: 'pirate-bay-step1-fallback',

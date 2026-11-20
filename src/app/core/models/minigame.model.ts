@@ -1,31 +1,19 @@
 /**
- * Die aktuell verfügbaren Minigame-Typen.
- * - 'focus-hold' / 'click-mash': Raschel-Tier-Tutorial
- * - 'balance' / 'coconut-throw': Affen, Schritt 2 (Konfrontation)
- * - 'footprint-track' / 'swipe-mash': Affen, Schritt 1 (Spurensuche)
- * - 'dig-search' / 'pattern-scan': Affen, Schritt 3 (Versteck finden)
- * - 'rhythm-tap' / 'reaction-box': Ä-Buff, Boxkampf-Herausforderung
- * - 'trophy-focus' / 'boast-mash': Ä-Buff, Schritt 2 (Vertrauen gewinnen) –
- *   nutzen bewusst dieselbe Mechanik wie 'focus-hold'/'click-mash' mit neuer
- *   Beschriftung, da inhaltlich passend (ruhig bleiben / Konkurrenz-Prahlen).
- * - 'calm-restraint' / 'reckless-posture': Dorf, Schritt 1 (Konfrontation) –
- *   ebenfalls Wiederverwendung von 'focus-hold'/'click-mash'.
- * - 'dance-battle': Dorf, Schritt 2 (Tanzwettbewerb) – Pfeiltasten-Rhythmusspiel.
- * - 'domino-match': Piraten-Bucht, Seeleute anwerben (Domino gegen Bilone & Bidate).
- * - 'anchor-heave': Piraten-Bucht, Schiff kapern (Anker lichten) – Wiederverwendung
- *   von 'click-mash' mit neuer Beschriftung.
- * - 'logic-puzzle' / 'lever-heave': Verlorener Königsschatz, Tempel-Mechanismus.
- * - 'kayak-paddle': Finale, Kajak über die Bucht paddeln – Wiederverwendung
- *   von 'rhythm-tap' mit neuer Beschriftung.
+ * Alle Minigame-Typen. Jeder Typ hat eine eigene Mechanik in
+ * features/minigame-overlay/games/*.game.ts; Titel, Regeln, Steuerung und
+ * der passende Skill stehen in data/minigames.data.ts.
  *
- * Die folgenden fünf hatten früher alle dieselbe 1:1-Kopie von 'click-mash'
- * (als zu eintönig empfunden) und haben jetzt jeweils eine eigenständige,
- * unterscheidbare Mechanik unter demselben Namen:
- * - 'click-mash': Raschel-Tier, Stärke – jetzt abwechselndes Zwei-Tasten-Stampfen.
- * - 'boast-mash': Ä-Buff Schritt 2, Stärke – jetzt wachsende Merk-Sequenz (Simon-Says-artig).
- * - 'reckless-posture': Dorf Schritt 1, Stärke – jetzt Kraftmesser halten & loslassen.
- * - 'anchor-heave': Finale, Schiff übernehmen – jetzt wiederholtes Ziehen per Maus-Drag.
- * - 'lever-heave': Königsschatz, Stärke – jetzt drei Steinblöcke in Position schieben.
+ * Raschel-Tier:   'focus-hold' (Gebüsch verfolgen + stillhalten) · 'click-mash' (Stampf-Rhythmus + Brüllen)
+ * Affen 1:        'footprint-track' (verblassende Fährte, Täuschspuren) · 'swipe-mash' (Lianen schlagen, Dornen meiden)
+ * Affen 2:        'balance' (Korb an der Feder, Windböen) · 'coconut-throw' (Vorhalten, begrenzte Munition)
+ * Affen 3:        'dig-search' (Heiß-kalt-Graben) · 'pattern-scan' (Suchlicht, 3 Hinweise)
+ * Ä-Buff 1:       'rhythm-tap' (Rhythmusspiel, Tempo sinkt) · 'reaction-box' (Richtungs-Konter, Finten)
+ * Ä-Buff 2:       'trophy-focus' (passend auf Geschichten reagieren) · 'boast-mash' (Simon-Says)
+ * Dorf 1:         'calm-restraint' (Gegenhalten/Tauziehen) · 'reckless-posture' (Kraftmesser, 3 Posen)
+ * Dorf 2:         'dance-battle' (4-Bahnen-Tanzspiel gegen Rivalin)
+ * Königsschatz:   'logic-puzzle' (gekoppelte Drehringe) · 'lever-heave' (Ausdauer-Hebel)
+ * Piraten-Bucht:  'domino-match' (echte Domino-Partie)
+ * Finale:         'kayak-paddle' (Paddeln/Lenken, Lärm) · 'anchor-heave' (Ziehen im Wellentakt)
  */
 export type MinigameType =
   | 'focus-hold'

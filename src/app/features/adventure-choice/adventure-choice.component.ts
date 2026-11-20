@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component, HostListener } from '@angular/core';
 import { AdventureService } from '../../core/services/adventure.service';
 import { AdventureChoice } from '../../core/models/adventure.model';
 
@@ -13,7 +13,7 @@ import { AdventureChoice } from '../../core/models/adventure.model';
           <div class="choice-title">Was tut ihr?</div>
           <div class="choice-buttons">
             @for (choice of choices; track choice.id) {
-              <button class="choice-btn" (click)="select(choice)">{{ choice.label }}</button>
+              <button class="choice-btn" (click)="select(choice)"><span class="choice-key">{{ $index + 1 }}</span>{{ choice.label }}</button>
             }
           </div>
         </div>
@@ -62,6 +62,13 @@ import { AdventureChoice } from '../../core/models/adventure.model';
       font-size: 0.95rem;
       transition: border-color 0.2s ease, background 0.2s ease;
     }
+    .choice-key {
+      display: inline-block;
+      min-width: 1.3em;
+      margin-right: 0.5rem;
+      font-size: 0.75rem;
+      opacity: 0.55;
+    }
     .choice-btn:hover {
       border-color: var(--accent-color, #e0a458);
       background: rgba(224,164,88,0.12);
@@ -77,5 +84,16 @@ export class AdventureChoiceComponent {
 
   select(choice: AdventureChoice): void {
     this.adventures.chooseOption(choice);
+  }
+
+  /** Zifferntasten 1, 2, … wählen die entsprechende Option. */
+  @HostListener('window:keydown', ['$event'])
+  onKeydown(event: KeyboardEvent): void {
+    const choices = this.adventures.pendingChoices();
+    if (!choices || event.repeat) return;
+    const index = Number.parseInt(event.key, 10) - 1;
+    if (Number.isNaN(index) || index < 0 || index >= choices.length) return;
+    event.preventDefault();
+    this.select(choices[index]);
   }
 }

@@ -1,5 +1,6 @@
-import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component, HostListener } from '@angular/core';
 import { DialogueService } from '../../core/services/dialogue.service';
+import { MinigameService } from '../../core/services/minigame.service';
 
 @Component({
   selector: 'app-dialogue-box',
@@ -93,7 +94,19 @@ import { DialogueService } from '../../core/services/dialogue.service';
   `],
 })
 export class DialogueBoxComponent {
-  constructor(readonly dialogue: DialogueService) {}
+  constructor(
+    readonly dialogue: DialogueService,
+    private readonly minigames: MinigameService,
+  ) {}
+
+  /** Leertaste/Enter blättern ebenfalls weiter (nicht während eines Minigames). */
+  @HostListener('window:keydown', ['$event'])
+  onKeydown(event: KeyboardEvent): void {
+    if (event.repeat || (event.key !== ' ' && event.key !== 'Enter')) return;
+    if (!this.dialogue.isSceneActive() || this.minigames.activeMinigame()) return;
+    event.preventDefault();
+    this.dialogue.advance();
+  }
 
   speakerLabel(speaker: string): string {
     switch (speaker) {

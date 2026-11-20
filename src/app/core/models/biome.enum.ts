@@ -25,5 +25,5 @@ export const BIOME_META: Record<BiomeType, BiomeMeta> = {
   [BiomeType.Lake]: { label: 'Binnensee', icon: '🌊', baseColorVar: '--biome-lake', dangerLevel: 2 },
   [BiomeType.Mountain]: { label: 'Berge', icon: '⛰️', baseColorVar: '--biome-mountain', dangerLevel: 1 },
   [BiomeType.Bay]: { label: 'Bucht', icon: '⚓', baseColorVar: '--biome-bay', dangerLevel: 1 },
-  [BiomeType.Village]: { label: 'Dorf', icon: '🛖', baseColorVar: '--biome-village', dangerLevel: 0 },
+  [BiomeType.Village]: { label: 'Dorf', icon: '🏘️', baseColorVar: '--biome-village', dangerLevel: 0 },
 };

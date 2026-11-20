@@ -1,0 +1,231 @@
+/* Gemeinsame Bausteine aller Minigames (features/minigame-overlay/games/*).
+   Global statt pro Komponente, damit die ~20 Spiele dieselbe Optik teilen,
+   ohne die Styles zu duplizieren. Alle Klassen tragen das Präfix "mg-". */
+
+.mg-game {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.55rem;
+  width: 100%;
+}
+
+.mg-area {
+  position: relative;
+  width: 300px;
+  max-width: 100%;
+  height: 180px;
+  background: radial-gradient(ellipse at center, #1f3a24 0%, #142016 100%);
+  border: 1px solid #3a3a45;
+  border-radius: 10px;
+  overflow: hidden;
+  touch-action: none;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+.mg-sprite {
+  position: absolute;
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+  filter: drop-shadow(0 0 4px rgba(0, 0, 0, 0.6));
+  line-height: 1;
+}
+
+.mg-line {
+  min-height: 1.2em;
+  font-size: 0.85rem;
+  color: #cfcabe;
+  text-align: center;
+}
+.mg-line.alert {
+  color: #ffd27a;
+  font-weight: bold;
+  animation: mg-shake 0.3s ease-in-out;
+}
+
+.mg-row {
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.mg-stats {
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+  font-size: 0.85rem;
+  color: var(--text-primary, #f2ede3);
+}
+
+.mg-meter {
+  position: relative;
+  width: 300px;
+  max-width: 100%;
+  height: 12px;
+  background: rgba(255, 255, 255, 0.08);
+  border-radius: 999px;
+  overflow: hidden;
+}
+.mg-meter-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--accent-color, #e0a458), #f2d19a);
+  transition: width 0.08s linear;
+}
+.mg-meter.danger .mg-meter-fill {
+  background: linear-gradient(90deg, #c0504d, #e08f8f);
+}
+.mg-meter-label {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.6rem;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: #fff;
+  text-shadow: 0 0 3px #000;
+}
+
+.mg-btn {
+  background: var(--accent-color, #e0a458);
+  color: #1a1a1a;
+  border: none;
+  border-radius: 999px;
+  padding: 0.55rem 1.3rem;
+  font-weight: bold;
+  font-size: 0.95rem;
+  font-family: inherit;
+  cursor: pointer;
+  touch-action: manipulation;
+  transition: transform 0.05s ease, filter 0.1s ease;
+}
+.mg-btn:active:not(:disabled) {
+  transform: scale(0.95);
+}
+.mg-btn:disabled {
+  opacity: 0.45;
+  cursor: default;
+}
+
+.mg-pad {
+  min-width: 64px;
+  min-height: 56px;
+  padding: 0.5rem 0.8rem;
+  font-size: 1.4rem;
+  font-family: inherit;
+  color: var(--text-primary, #f2ede3);
+  background: radial-gradient(ellipse at center, #1f3a24 0%, #142016 100%);
+  border: 2px solid #3a3a45;
+  border-radius: 12px;
+  cursor: pointer;
+  touch-action: manipulation;
+  user-select: none;
+  transition: transform 0.06s ease, border-color 0.1s ease, background 0.1s ease, opacity 0.1s ease;
+}
+.mg-pad small {
+  display: block;
+  font-size: 0.6rem;
+  opacity: 0.6;
+  margin-top: 2px;
+}
+.mg-pad:active:not(:disabled),
+.mg-pad.pressed {
+  transform: scale(0.93);
+}
+.mg-pad.hint {
+  border-color: var(--accent-color, #e0a458);
+}
+.mg-pad.good {
+  border-color: #8fd68a;
+  background: rgba(143, 214, 138, 0.22);
+}
+.mg-pad.bad {
+  border-color: #e08f8f;
+  background: rgba(224, 143, 143, 0.2);
+}
+.mg-pad:disabled {
+  opacity: 0.45;
+  cursor: default;
+}
+
+.mg-hearts {
+  letter-spacing: 2px;
+}
+
+.mg-pops {
+  position: absolute;
+  top: 38%;
+  left: 50%;
+  transform: translateX(-50%);
+  pointer-events: none;
+  z-index: 5;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.mg-pop {
+  font-weight: bold;
+  font-size: 1.05rem;
+  color: #8fd68a;
+  white-space: nowrap;
+  text-shadow: 0 0 4px #000, 0 0 8px #000;
+  animation: mg-pop-up 0.85s ease-out forwards;
+}
+.mg-pop.bad {
+  color: #ff9b9b;
+}
+
+.mg-timer {
+  position: relative;
+  width: 300px;
+  max-width: 100%;
+  height: 16px;
+  background: rgba(255, 255, 255, 0.06);
+  border-radius: 999px;
+  overflow: hidden;
+}
+.mg-timer-fill {
+  height: 100%;
+  background: rgba(207, 202, 190, 0.35);
+  transition: width 0.1s linear;
+}
+.mg-timer.low .mg-timer-fill {
+  background: rgba(224, 110, 110, 0.6);
+  animation: mg-blink 0.5s ease-in-out infinite alternate;
+}
+.mg-timer-label {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.7rem;
+  color: #f2ede3;
+}
+
+@keyframes mg-pop-up {
+  0% { transform: translateY(6px) scale(0.8); opacity: 0; }
+  20% { transform: translateY(0) scale(1.1); opacity: 1; }
+  100% { transform: translateY(-28px) scale(1); opacity: 0; }
+}
+@keyframes mg-blink {
+  from { opacity: 0.55; }
+  to { opacity: 1; }
+}
+@keyframes mg-shake {
+  0%, 100% { transform: translateX(0); }
+  25% { transform: translateX(-3px); }
+  75% { transform: translateX(3px); }
+}
+@keyframes mg-shrink {
+  from { transform: translate(-50%, -50%) scale(1); opacity: 0.9; }
+  to { transform: translate(-50%, -50%) scale(0.35); opacity: 0.2; }
+}
+@keyframes mg-bar-drain {
+  from { width: 100%; }
+  to { width: 0%; }
+}

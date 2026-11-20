@@ -46,7 +46,8 @@ src/app/
 │   │   ├── hex-grid/hex-grid.component.ts    SVG-Rendering des gesamten Grids
 │   │   └── hex-tile/hex-tile.component.ts    Einzelnes Hexagon (SVG <g>)
 │   ├── dialogue-box/dialogue-box.component.ts   Sprechblasen am unteren Rand
-│   └── hud/hud.component.ts             Charakter-Umschalter, Fortschrittsanzeige
+│   ├── hud/hud.component.ts             Charakter-Umschalter, Fortschrittsanzeige
+│   └── minigame-overlay/                Minigame-Rahmen + games/*.game.ts (siehe unten)
 └── app.component.ts
 ```
 
@@ -78,6 +79,32 @@ src/app/
 Das komplette Strand-Intro liegt in `data/dialogue-scenes.data.ts` unter der ID `'intro'`
 und wird beim ersten `ngOnInit()` von `GameBoardComponent` automatisch abgespielt
 (`dialogue.playScene(DIALOGUE_SCENES['intro'])`), bevor der Spieler Züge ausführen kann.
+
+## Minigames
+
+Jede Abenteuer-Entscheidung startet ein Minigame (`AdventureChoice.minigame`).
+Ablauf in `features/minigame-overlay/minigame-overlay.component.ts`:
+**Anleitungskarte → 3-2-1-Countdown → Spiel → Ergebnis** (Leertaste/Enter oder Klick).
+Der Timer startet erst nach "Los geht's!".
+
+- `minigame-overlay/minigame-base.ts`: gemeinsame Basisklasse (Timer, Spielschleife,
+  Aufräumen, Tastatur, Feedback-Popups) plus `<app-mg-status>` (Zeitleiste).
+- `minigame-overlay/games/*.game.ts`: ein Standalone-Component pro Spiel, meldet sich
+  nur über `(finished)` mit `{ success, detail }` zurück.
+- `data/minigames.data.ts`: Titel, Regeln, Steuerung und passender Skill je Typ.
+- `core/services/sfx.service.ts`: kleine Web-Audio-Soundeffekte (keine Audiodateien).
+- `styles/minigames.scss`: gemeinsame `mg-*`-Klassen aller Spiele.
+
+**Skill-Vorteil:** Passt der Skill des Minigames (`skill` in `minigames.data.ts`) zur
+gewählten Hauptfigur, läuft das Spiel mit `easy = true` (mehr Zeit/Toleranz) und zeigt
+ein "Vorteil"-Abzeichen. So wirkt sich die Figurenwahl auf jede Entscheidung aus.
+
+Alle Spiele sind mit Maus, Touch (Pointer-Events) und Tastatur spielbar. Emojis nur aus
+dem Bestand, den Windows 10 darstellen kann (z.B. kein 🪨/🪵/🛖).
+
+**Neues Minigame hinzufügen:** Typ in `minigame.model.ts` ergänzen, Eintrag in
+`MINIGAME_INFO`, Komponente in `games/` von `MinigameBase` ableiten (`start()`
+implementieren, `finish(success, detail)` aufrufen) und im `@switch` des Overlays eintragen.
 
 ## Nächste sinnvolle Schritte
 
